@@ -1,8 +1,7 @@
-import app from './api/index.ts'
-
-import { WebSocketServer } from 'ws';
-import * as http from 'http';
-import { wsHandler } from './api/ws.ts';
+import app from './api/api.ts'
+import { wsHandler } from './api/ws.ts'
+import { WebSocketServer } from 'ws'
+import * as http from 'http'
 
 const port = 3000
 
