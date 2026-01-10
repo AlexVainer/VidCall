@@ -2,6 +2,7 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
+  font-size: 16px;
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
@@ -26,7 +27,7 @@ body {
   margin: 0;
   display: flex;
   place-items: center;
-  min-width: 320px;
+  min-width: 100vw;
   min-height: 100vh;
 }
 
@@ -52,6 +53,12 @@ button:hover {
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+div,
+button,
+input {
+  box-sizing: border-box;
 }
 
 @media (prefers-color-scheme: light) {

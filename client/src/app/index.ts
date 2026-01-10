@@ -1,2 +1,3 @@
-export { AppRouter } from './router/router.tsx';
-export { default as App } from './App.tsx';
+export { App } from './App.tsx'
+export { Layout } from './Layout/ui/Layout'
+export { ModalProvider } from './ModalProvider/ui/ModalProvider'
