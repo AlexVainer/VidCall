@@ -1,9 +1,13 @@
 import session from "express-session"
-import { SECRET } from "../../config.ts"
+import { SESSION_SECRET } from "../../config.ts"
+
+if (!SESSION_SECRET) {
+    throw new Error("SESSION_SECRET is not defined")
+}
 
 export const sessionMiddleware = session({
-    secret: SECRET,
-    cookie: { maxAge: 60 * 60 * 1000 },
+    secret: SESSION_SECRET,
+    cookie: { maxAge: 60 * 60 * 100 },
     resave: false,
     saveUninitialized: false,
 })
