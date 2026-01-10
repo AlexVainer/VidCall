@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid'
 interface User {
     socketId: string
     name: string
+    role: 'host' | 'guest'
 }
 interface Room {
     roomId: string
@@ -61,19 +62,23 @@ export const wsHandler = (socket: Socket, io: Server) => {
             return
         }
 
-        socket.join(roomId)
+        const user = findRoom(roomId)?.users.find(u => u.socketId === socket.id)
+
+        if (user?.role !== 'host') {
+            socket.join(roomId)
+        }
         
+        const role =  user?.role || 'guest'
         const room = findRoom(roomId)
         if (!room) {
-            saveRoom({ roomId, users: [ { socketId: socket.id, name } ] });
+            saveRoom({ roomId, users: [ { socketId: socket.id, name, role } ] });
         } else if (!room.users.some(user => user.socketId === socket.id)) {
-            room.users.push({ socketId: socket.id, name })
+            room.users.push({ socketId: socket.id, name, role })
             saveRoom(room)
         }
-
-        socket.to(roomId).emit('userjoined', { name })
+        socket.emit('joinroom', { role })
         
-        socket.emit('joinroom', `You joined room ${roomId}`)
+        socket.to(roomId).emit('userjoined', { name })
     })
 
     socket.on('createroom', ({ name }: { name: string }) => {
@@ -88,7 +93,7 @@ export const wsHandler = (socket: Socket, io: Server) => {
         }
         
         if (!findRoom(userId)) {
-            saveRoom({ roomId: userId, users: [ { socketId: socket.id, name } ] });
+            saveRoom({ roomId: userId, users: [ { socketId: socket.id, name, role: 'host' } ] });
         }
         const room = findRoom(userId)
         socket.emit('roomcreated', { roomId: userId, users: room?.users })
@@ -133,6 +138,9 @@ export const wsHandler = (socket: Socket, io: Server) => {
                 if (!Object.keys(users).length) {
                     deleteRoom(room.roomId)
                 }
+            }
+            if (room.users.length === 1) {
+                deleteRoom(room.roomId)
             }
         }
     })

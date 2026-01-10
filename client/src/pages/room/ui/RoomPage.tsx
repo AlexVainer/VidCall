@@ -8,7 +8,7 @@ import styles from './RoomPage.module.scss'
 export const RoomPage = () => {
   const { roomId } = useParams<{ roomId: string }>()
   const { setModalError, modalError, openJoinModal } = useModalStore()
-  const { userName, setRoomParamId, roomParamId, checkedRoom, setCheckedRoom } = useRoomStore()
+  const { userName, setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, role } = useRoomStore()
 
   const [isRoomChecked, setIsRoomChecked] = useState(false)
   const [isCheckingRoom, setIsCheckingRoom] = useState(false)
@@ -16,9 +16,10 @@ export const RoomPage = () => {
   const {
     videoSelfRef,
     videoRemoteRef,
+    // dataChannelRef,
     isVideoEnabled,
     isAudioEnabled,
-    isMediaReady,
+    // isMediaReady,
     toggleVideo,
     toggleAudio,
     initMedia,
@@ -72,16 +73,20 @@ export const RoomPage = () => {
       return
     }
 
+    if (!role) {
+      return
+    }
+
     initMedia()
-  }, [isRoomChecked, userName, roomParamId, roomId])
+  }, [isRoomChecked, userName, roomParamId, roomId, role])
 
   useEffect(() => {
-    if (isMediaReady && userName && roomId && joinRoom) {
+    if (userName && roomId && joinRoom) {
       joinRoom(userName)
     }
-  }, [isMediaReady, userName, roomId, joinRoom])
+  }, [userName, roomId, joinRoom])
 
-  if (modalError || !isRoomChecked) return null
+  if (modalError || !isRoomChecked || !userName || !role) return null
 
   return (
     <div className={styles.page}>
