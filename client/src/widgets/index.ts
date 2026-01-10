@@ -1,0 +1,1 @@
+export { RoomTabs } from './room-tabs/ui/RoomTabs'

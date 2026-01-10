@@ -1,0 +1,25 @@
+.page {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    height: 100vh;
+    width: 100vw;
+    background-color: #121212;
+}
+
+.left, .right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+    min-width: 300px;
+}
+
+.left video, .right video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

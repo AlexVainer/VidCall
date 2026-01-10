@@ -1,0 +1,1 @@
+export { AppRouter } from './router/router.tsx'
