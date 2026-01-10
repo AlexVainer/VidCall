@@ -1,15 +1,17 @@
 import { useEffect, useRef, useState } from "react"
-import { useSocketStore } from "@/entities"
+import { useSocketStore, useRoomStore } from "@/entities"
 
 type onErrorType = (message: string) => void
 
 export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const { socket } = useSocketStore()
+  const { role, setRole } = useRoomStore()
 
   const videoSelfRef = useRef<HTMLVideoElement>(null)
   const videoRemoteRef = useRef<HTMLVideoElement>(null)
   const peerConnection = useRef<RTCPeerConnection | null>(null)
   const localStream = useRef<MediaStream | null>(null)
+  const dataChannelRef = useRef<RTCDataChannel | null>(null)
   
   const pendingRTCConfig = useRef<boolean | null>(null)
   const pendingIceCandidates = useRef<RTCIceCandidateInit[]>([])
@@ -33,6 +35,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     videoRemoteRef.current = null
     peerConnection.current = null
     localStream.current = null
+    dataChannelRef.current = null
     pendingIceCandidates.current = []
     pendingOffer.current = null
     joined.current = false
@@ -115,6 +118,36 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       
       const pc = new RTCPeerConnection(config)
       peerConnection.current = pc
+
+      if (role === 'host') {
+        const dataChannel = pc.createDataChannel('chat')
+        dataChannelRef.current = dataChannel
+        dataChannel.onopen = () => {
+          console.log('Data channel is open')
+        }
+        dataChannel.onmessage = (event) => {
+          console.log('Data channel message:', event.data)
+        }
+        dataChannel.onclose = () => {
+          console.log('Data channel is closed')
+        }
+      }
+
+      pc.ondatachannel = (event) => {
+        dataChannelRef.current = event.channel
+        console.log('Data channel created:', event.channel)
+        event.channel.onopen = () => {
+          console.log('Data channel is open')
+        }
+
+        event.channel.onmessage = (event) => {
+          console.log('Data channel message:', event.data)
+        }
+
+        event.channel.onclose = () => {
+          console.log('Data channel is closed')
+        }
+      }
 
       pc.oniceconnectionstatechange = () => {
         const state = pc.iceConnectionState
@@ -281,7 +314,12 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       clearRefs()
     }
 
+    const handleJoin = (data: { role: 'host' | 'guest' }) => {
+      setRole(data.role)
+    }
+
     socket.on('userjoined', handleUserJoined)
+    socket.on('joinroom', handleJoin)
     socket.on('joinerror', handleJoinError)
     socket.on('icecandidate', handleIceCandidate)
     socket.on('offer', handleOffer)
@@ -289,6 +327,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
 
     return () => {
       socket.off('userjoined', handleUserJoined)
+      socket.off('joinroom', handleJoin)
       socket.off('joinerror', handleJoinError)
       socket.off('icecandidate', handleIceCandidate)
       socket.off('offer', handleOffer)
@@ -305,6 +344,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   return {
     videoSelfRef,
     videoRemoteRef,
+    dataChannelRef,
     isVideoEnabled,
     isAudioEnabled,
     isMediaReady,
