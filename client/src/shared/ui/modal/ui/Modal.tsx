@@ -1,8 +1,9 @@
 import type { ModalProps } from '../model/types'
 import styles from './Modal.module.scss'
+import { Icon } from "@/shared"
 
 
-export const Modal = ({ children, onClose, unclosable }: ModalProps) => {
+export const Modal = ({ children, onClose, unclosable, isOpen, fullSize }: ModalProps) => {
     const handleClickOutside = (e: React.MouseEvent) => {
         if (e.target === e.currentTarget && !unclosable) {
             onClose?.()
@@ -10,13 +11,12 @@ export const Modal = ({ children, onClose, unclosable }: ModalProps) => {
     }
 
     return (
-        <div className={styles.wrapper} onClick={handleClickOutside}>
-            <div className={styles.modal}>
-                <div className={styles.modal__content}>
-                    {children}
-                </div>
+        <div className={`${styles.modal} ${isOpen ? styles.open : ''}`}>
+            <div className={`${styles.fade} ${isOpen ? styles.open : ''}`} onClick={handleClickOutside} />
+            <div className={`${styles.modal__content} ${isOpen ? styles.open : ''} ${fullSize ? styles.fullSize : ''}`}>
+                {children}
                 {!unclosable ? <div className={styles.cross} onClick={onClose}>
-                    ✚
+                    <Icon name="close" size={24} color="red" />
                 </div> : null}
             </div>
         </div>

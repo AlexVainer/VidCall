@@ -1,130 +1,110 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { useModalStore, useRoomStore, checkRoomExists } from "@/entities"
-import { Button } from "@/shared"
 import { useWebRTC } from "../model/useWebRTC"
 import styles from './RoomPage.module.scss'
+import { Chat, LocalVideo, RemoteVideo } from "@/entities"
+import { JoinRoomModal } from "@/features"
+import { IconButton } from "@/shared"
 
 export const RoomPage = () => {
-  const { roomId } = useParams<{ roomId: string }>()
-  const { setModalError, modalError, openJoinModal } = useModalStore()
-  const { userName, setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, role } = useRoomStore()
-
-  const [isRoomChecked, setIsRoomChecked] = useState(false)
-  const [isCheckingRoom, setIsCheckingRoom] = useState(false)
-
-  const {
-    videoSelfRef,
-    videoRemoteRef,
-    // dataChannelRef,
-    isVideoEnabled,
-    isAudioEnabled,
-    // isMediaReady,
-    toggleVideo,
-    toggleAudio,
-    initMedia,
-    joinRoom
-  } = useWebRTC(roomId || '', setModalError)
-
-  useEffect(() => {
-    if (!roomId) {
-      setModalError('Room ID is required')
-      return
-    }
+    const { roomId } = useParams<{ roomId: string }>()
+    const { setModalError, modalError, openJoinModal, isJoinModalOpen } = useModalStore()
+    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom } = useRoomStore()
     
-    const checkRoom = async () => {
-        if (isCheckingRoom || isRoomChecked) return
-        if (checkedRoom) {
-            setIsRoomChecked(true)
+    const [isRoomChecked, setIsRoomChecked] = useState(false)
+    const [isCheckingRoom, setIsCheckingRoom] = useState(false)
+    const [isMediaPending, setIsMediaPending] = useState(false)
+    const [isChatOpen, setIsChatOpen] = useState(false)
+    
+    const {
+        videoSelfRef,
+        videoRemoteRef,
+        isVideoEnabled,
+        isAudioEnabled,
+        isMediaReady,
+        toggleVideo,
+        toggleAudio,
+        initMedia,
+        joinRoom,
+        clearRefs,
+        emitMessage,
+        RTCDataChannelState
+    } = useWebRTC(roomId || '', setModalError)
+    
+    useEffect(() => {
+        if (!roomId) {
+            setModalError('Room ID is required')
             return
         }
         
-        setIsCheckingRoom(true)
-
-        const roomSize = await checkRoomExists(roomId)
-
-        setIsCheckingRoom(false)
-
-        if (roomSize && roomSize.size < 2) {
-            setIsRoomChecked(true)
-            setCheckedRoom(roomId)
-            return
-        } else if (roomSize && roomSize.size > 1) {
-            setModalError('Room is full')
-            return
-        } else {
-            setModalError('Room does not exist')
-            return
+        const checkRoom = async () => {
+            if (isCheckingRoom || isRoomChecked) return
+            if (checkedRoom) {
+                setIsRoomChecked(true)
+                return
+            }
+            
+            setIsCheckingRoom(true)
+            
+            const roomSize = await checkRoomExists(roomId)
+            
+            setIsCheckingRoom(false)
+            
+            if (roomSize && roomSize.size < 2) {
+                setIsRoomChecked(true)
+                setCheckedRoom(roomId)
+                return
+            } else if (roomSize && roomSize.size > 1) {
+                setModalError('Room is full')
+                return
+            } else {
+                setModalError('Room does not exist')
+                return
+            }
         }
-    }
-
-    checkRoom()
-  }, [roomId, isRoomChecked, isCheckingRoom, checkedRoom])
-
-  useEffect(() => {
-    if (!isRoomChecked || modalError || !roomId) return
-
-    if (!roomParamId) {
-      setRoomParamId(roomId)
-    }
-
-    if (!userName) {
-      openJoinModal()
-      return
-    }
-
-    if (!role) {
-      return
-    }
-
-    initMedia()
-  }, [isRoomChecked, userName, roomParamId, roomId, role])
-
-  useEffect(() => {
-    if (userName && roomId && joinRoom) {
-      joinRoom(userName)
-    }
-  }, [userName, roomId, joinRoom])
-
-  if (modalError || !isRoomChecked || !userName || !role) return null
-
-  return (
-    <div className={styles.page}>
-      <div className={styles.left}>
-        <video 
-          controls={false} 
-          ref={videoSelfRef} 
-          autoPlay 
-          playsInline 
-          muted 
-          style={{transform: 'scale(-1,1)'}} 
-        /> 
-      </div>
-      <div className={styles.right}>
-        <video 
-          controls={false}
-          ref={videoRemoteRef} 
-          autoPlay 
-          playsInline
-          muted={false}
-          style={{
-            width: '100%',
-            height: '100%',
-            objectFit: 'cover',
-            background: '#000'
-          }}
-        /> 
-      </div>
-
-      <div className={styles.controls}>
-        <Button onClick={toggleVideo}>
-          {isVideoEnabled ? 'cam off' : 'cam on'}
-        </Button>
         
-        <Button onClick={toggleAudio}>
-          {isAudioEnabled ? 'mic off' : 'mic on'}
-        </Button>
-      </div>
+        checkRoom()
+    }, [roomId, isRoomChecked, isCheckingRoom, checkedRoom])
+    
+    useEffect(() => {
+        if (!isRoomChecked || modalError || !roomId || joinedRoom) return
+        
+        if (!roomParamId) {
+            setRoomParamId(roomId)
+        }
+        if (!joinedRoom && !isJoinModalOpen) {
+            openJoinModal()
+        }
+        if(!isMediaReady && !isMediaPending) {
+            initMedia()
+            setIsMediaPending(true)
+        }
+    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaReady, joinedRoom, isJoinModalOpen, isMediaPending])
+    
+    useEffect(() => {
+        return () => {
+            clearRefs()
+        }
+    }, [])
+
+    if (modalError || !isRoomChecked) return null
+
+    return (
+        <div className={styles.page}>
+            <JoinRoomModal join={joinRoom} />
+
+            <div className={styles.container}>
+                <div className={styles.videoContainer}>
+                    <LocalVideo videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} modal={isJoinModalOpen} />
+
+                    <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                </div>
+                <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} onClose={() => setIsChatOpen(false)} isOpen={isChatOpen} />
+                {joinedRoom && !isChatOpen && <div className={styles.chatIcon}>
+                    <IconButton icon="chat" square onClick={() => setIsChatOpen(true)} />
+                </div>}
+            </div> 
     </div>
-  )
+    )
 }

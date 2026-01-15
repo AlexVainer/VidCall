@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid'
 
 interface User {
     socketId: string
-    name: string
     role: 'host' | 'guest'
 }
 interface Room {
@@ -49,12 +48,12 @@ export const wsHandler = (socket: Socket, io: Server) => {
     }
     socket.on('error', console.error)
 
-    socket.on('joinroom', ({roomId, name }: {roomId: string, name: string}) => {
+    socket.on('joinroom', ({roomId }: {roomId: string}) => {
         if (!io.sockets.adapter.rooms.get(roomId)) {
             socket.emit('joinerror', 'Room does not exist')
             return
         }
-
+        
         const roomSize = io.sockets.adapter.rooms.get(roomId)?.size
 
         if (roomSize && roomSize > 1) {
@@ -64,36 +63,37 @@ export const wsHandler = (socket: Socket, io: Server) => {
 
         const user = findRoom(roomId)?.users.find(u => u.socketId === socket.id)
 
-        if (user?.role !== 'host') {
+        if (!user) {
             socket.join(roomId)
-        }
+
+            const role =  roomSize ? 'guest' : 'host'
+            const room = findRoom(roomId)
+
+            if (!room) {
+                saveRoom({ roomId, users: [ { socketId: socket.id, role } ] });
+            } else if (!room.users.some(user => user.socketId === socket.id)) {
+                room.users.push({ socketId: socket.id, role })
+                saveRoom(room)
+            }
+
         
-        const role =  user?.role || 'guest'
-        const room = findRoom(roomId)
-        if (!room) {
-            saveRoom({ roomId, users: [ { socketId: socket.id, name, role } ] });
-        } else if (!room.users.some(user => user.socketId === socket.id)) {
-            room.users.push({ socketId: socket.id, name, role })
-            saveRoom(room)
+            socket.emit('joinroom', { role })
+            
+            socket.to(roomId).emit('userjoined')
+        } else if (user.role === 'host') {
+            socket.emit('joinedashost')
         }
-        socket.emit('joinroom', { role })
-        
-        socket.to(roomId).emit('userjoined', { name })
     })
 
-    socket.on('createroom', ({ name }: { name: string }) => {
+    socket.on('createroom', () => {
         if (!userId) {
             return
         }
 
-        if (io.sockets.adapter.rooms.has(userId)) {
-            socket.join(userId)
-        } else {
-            socket.join(userId)
-        }
+        socket.join(userId)
         
         if (!findRoom(userId)) {
-            saveRoom({ roomId: userId, users: [ { socketId: socket.id, name, role: 'host' } ] });
+            saveRoom({ roomId: userId, users: [ { socketId: socket.id, role: 'host' } ] });
         }
         const room = findRoom(userId)
         socket.emit('roomcreated', { roomId: userId, users: room?.users })
@@ -110,7 +110,6 @@ export const wsHandler = (socket: Socket, io: Server) => {
 
     socket.on('answer', (answer: RTCSessionDescriptionInit) => {
         const room = findRoom(getRoomBySocketId(socket.id))
-        
         if (room) {
             socket.to(room.roomId).emit('answer', answer)
         } else {
@@ -130,17 +129,11 @@ export const wsHandler = (socket: Socket, io: Server) => {
     socket.on('disconnect', () => {
         const room = findRoom(getRoomBySocketId(socket.id))
         if (room) {
-            let users = room.users
-            if (users && users.find(user => user.socketId === socket.id)) {
-                users = users.filter(user => user.socketId !== socket.id)
-                socket.to(room.roomId).emit('user-left', socket.id)
-
-                if (!Object.keys(users).length) {
-                    deleteRoom(room.roomId)
-                }
-            }
-            if (room.users.length === 1) {
+            if (room.users.length < 2) {
                 deleteRoom(room.roomId)
+            } else {
+                saveRoom({ ...room, users: room.users.filter(user => user.socketId !== socket.id) })
+                socket.to(room.roomId).emit('user-left', socket.id)
             }
         }
     })

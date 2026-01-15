@@ -1,0 +1,32 @@
+@use '@/app/styles' as *;
+
+:root {
+  font-family: $font-main;
+  font-weight: 300;
+  line-height: 1.5;
+  font-size: 16px;
+
+  color-scheme: light dark;
+  color: $lightColor;
+  background-color: $darkBackgroundColor;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  outline: none !important;
+}
+
+body {
+  margin: 0;
+  display: flex;
+  place-items: center;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+div,
+button,
+input {
+  box-sizing: border-box;
+}

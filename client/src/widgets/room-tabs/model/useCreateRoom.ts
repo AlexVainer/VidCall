@@ -1,0 +1,44 @@
+import { useEffect } from "react"
+import { useNavigate } from "react-router"
+import { useModalStore, useRoomStore, useSocketStore } from "@/entities"
+
+export const useCreateRoom = () => {
+    const navigate = useNavigate()
+    const { socket } = useSocketStore()
+    
+    const { setModalError } = useModalStore()
+    const { setCheckedRoom } = useRoomStore()
+    
+    useEffect(() => {
+        if (!socket) return
+        
+        const handleRoomCreated = ({ roomId }: { roomId: string }) => {
+            setCheckedRoom(roomId)
+            navigate(`/room/${roomId}`)
+        }
+        
+        socket.on('roomcreated', handleRoomCreated)
+        
+        return () => {
+            socket.off('roomcreated', handleRoomCreated)
+        }
+    }, [socket, navigate, setCheckedRoom])
+
+    const handleCreate = () => {
+        if (!socket) {
+            setModalError('Socket not available')
+            return
+        }
+        
+        if (!socket.connected) {
+            setModalError('Socket not connected yet')
+            return
+        }
+
+        socket.emit('createroom')
+    }
+    
+    return {
+        handleCreate,
+    }
+}

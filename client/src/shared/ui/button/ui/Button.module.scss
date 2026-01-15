@@ -1,23 +1,72 @@
+@use '@/app/styles' as *;
+
 .button {
     padding: 10px 20px;
     border: none;
-    border-radius: 4px;
+    border-radius: 12px;
     cursor: pointer;
-    background-color: #092f56;
-    color: white;
-    transition: background-color 0.3s ease;
+    background-color: $darkButton;
+    color: $lightColor;
+    font-size: 16px;
+    line-height: 19px;
+    letter-spacing: normal;
+    font-weight: 600;
+    @include smooth-ui(all);
 
     &:hover {
-        background-color: #0056b3;
+        background-color: $darkButtonHover;
+        transform: scale(0.97);
     }
 
     &:active {
-        background-color: #003e76;
+        background-color: $darkButtonActive;
+        transform: scale(0.93);
     }
 
-    &__disabled {
-        background-color: #ccc;
-        color: #666;
+    &.liquid {
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5.8px);
+        -webkit-backdrop-filter: blur(5.8px);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        &:active {
+            background: rgba(255, 255, 255, 0.01);
+        }
+    }
+
+    &.emitMessage {
+        background: rgba(33, 44, 107, 0.2);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5.8px);
+        -webkit-backdrop-filter: blur(5.8px);
+
+        &:hover {
+            background: rgba(33, 44, 107, 0.2);
+        }
+
+        &:active {
+            background: rgba(33, 44, 107, 0.2);
+        }
+    }
+
+    &.withIcon {
+        padding: 10px 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 5px;
+    }
+
+    &.square {
+        padding: 12px;
+    }
+
+    &.disabled {
+        background-color: $darkButtonDisabled;
         cursor: not-allowed;
     }
 }

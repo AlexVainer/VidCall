@@ -1,23 +1,27 @@
 import { create } from "zustand"
 
 interface RoomStore {
-    roomParamId: string;
+    roomParamId: string | null;
     userName: string;
-    checkedRoom: string;
+    checkedRoom: string | null;
     role: 'host' | 'guest' | null;
-    setRoomParamId: (roomParamId: string) => void;
+    setRoomParamId: (roomParamId: string | null) => void;
     setUserName: (userName: string) => void;
-    setCheckedRoom: (checkedRoom: string) => void;
-    setRole: (role: 'host' | 'guest') => void;
+    setCheckedRoom: (checkedRoom: string | null) => void;
+    setRole: (role: 'host' | 'guest' | null) => void;
+    joinedRoom: boolean;
+    setJoinedRoom: (joinedRoom: boolean) => void;
 }
 
 export const useRoomStore = create<RoomStore>((set => ({
-    roomParamId: "",
+    roomParamId: null,
     userName: "",
-    checkedRoom: '',
+    checkedRoom: null,
     role: null,
-    setRoomParamId: (roomParamId: string) => set({ roomParamId }),
+    joinedRoom: false,
+    setRoomParamId: (roomParamId: string | null) => set({ roomParamId }),
     setUserName: (userName: string) => set({ userName }),
-    setCheckedRoom: (checkedRoom: string) => set({ checkedRoom }),
-    setRole: (role: 'host' | 'guest') => set({ role }),
+    setCheckedRoom: (checkedRoom: string | null) => set({ checkedRoom }),
+    setRole: (role: 'host' | 'guest' | null) => set({ role }),
+    setJoinedRoom: (joinedRoom: boolean) => set({ joinedRoom }),
 })))
