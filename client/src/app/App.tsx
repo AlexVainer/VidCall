@@ -1,4 +1,4 @@
-import './styles/index.scss'
+import './styles/main.scss'
 import { Layout } from './Layout/ui/Layout'
 import { AppRouter } from './providers'
 

@@ -1,17 +1,14 @@
-import { useModalStore } from "@/entities"
 import styles from './RoomTabs.module.scss'
 import { Tab } from "./Tab"
+import { useCreateRoom } from "../model/useCreateRoom"
 
 export const RoomTabs = () => {
-    const { openCreateModal, openJoinModal } = useModalStore()
-    
+    const { handleCreate } = useCreateRoom()
+  
     return (
         <div className={styles.tabs}>
-            <Tab onClick={openCreateModal}>
+            <Tab onClick={handleCreate}>
                 Create Room
-            </Tab>
-            <Tab onClick={openJoinModal}>
-                Join Room
             </Tab>
         </div>
     )

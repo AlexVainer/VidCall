@@ -6,14 +6,14 @@ import type { ErrorModalProps } from "../models/types"
 import styles from './ErrorModal.module.scss'
 
 export const ErrorModal = ({ onClose, error }: ErrorModalProps) => {
-    const { modalError, setModalError } = useModalStore()
+    const { modalError, setModalError, isErrorModalOpen } = useModalStore()
 
     const handleClose = () => {
         setModalError('')
     }
 
     return (
-        <Modal onClose={onClose}>
+        <Modal onClose={onClose} isOpen={isErrorModalOpen}>
             <div className={styles.errorModal}>
                 <p className={styles.errorMessage}>{error || modalError}</p>
             </div>

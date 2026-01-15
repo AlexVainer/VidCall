@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react"
-import { useSocketStore, useRoomStore } from "@/entities"
+import { useSocketStore, useRoomStore, useModalStore, type Message, useChatStore } from "@/entities"
 
 type onErrorType = (message: string) => void
 
 export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const { socket } = useSocketStore()
-  const { role, setRole } = useRoomStore()
+  const { closeJoinModal } = useModalStore()
+  const { role, setRole, setRoomParamId, setCheckedRoom, setJoinedRoom } = useRoomStore()
+  const { emit } = useChatStore()
 
   const videoSelfRef = useRef<HTMLVideoElement>(null)
   const videoRemoteRef = useRef<HTMLVideoElement>(null)
   const peerConnection = useRef<RTCPeerConnection | null>(null)
   const localStream = useRef<MediaStream | null>(null)
   const dataChannelRef = useRef<RTCDataChannel | null>(null)
+  const roleRef = useRef(role)
   
   const pendingRTCConfig = useRef<boolean | null>(null)
   const pendingIceCandidates = useRef<RTCIceCandidateInit[]>([])
@@ -22,7 +25,10 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true)
   const [isAudioEnabled, setIsAudioEnabled] = useState(true)
   const [isMediaReady, setIsMediaReady] = useState(false)
+  const [isMediaPending, setIsMediaPending] = useState(false)
   const [RTCConfig, setRTCConfig] = useState<RTCConfiguration | null>(null)
+  const [RTCDataChannelState, setRTCDataChannelState] = useState<RTCDataChannelState | null>(null)
+  const [isChatOnly, setIsChatOnly] = useState(false)
 
   const clearRefs = () => {
     if (localStream.current) {
@@ -35,10 +41,15 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     videoRemoteRef.current = null
     peerConnection.current = null
     localStream.current = null
+    dataChannelRef.current?.close()
     dataChannelRef.current = null
     pendingIceCandidates.current = []
     pendingOffer.current = null
     joined.current = false
+    setRoomParamId(null)
+    setCheckedRoom(null)
+    setRole(null)
+    setJoinedRoom(false)
   }
 
   const getRoomCoockie = async () => {
@@ -85,69 +96,84 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     }
   }
 
+  const initWebRTCData = async (dataRole: string | null) => {
+    if (!dataRole) return
+    const pc = peerConnection.current
+    if (!pc || !localStream.current) return
+    if (dataRole === 'host') {
+      const dataChannel = pc.createDataChannel('chat')
+      dataChannelRef.current = dataChannel
+      dataChannel.onopen = () => {
+        setRTCDataChannelState(dataChannel.readyState)
+        emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have joined chat!', sendedAt: new Date() })
+      }
+      dataChannel.onmessage = (event) => {
+          emit(JSON.parse(event.data))
+      }
+      dataChannel.onclose = () => {
+        setRTCDataChannelState(dataChannel.readyState)
+        emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have left chat!', sendedAt: new Date() })
+      }
+    } else if (dataRole === 'guest') {
+      pc.ondatachannel = (event) => {
+        dataChannelRef.current = event.channel
+        event.channel.onopen = () => {
+          setRTCDataChannelState(event.channel.readyState)
+          emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have joined chat!', sendedAt: new Date() })
+        }
+        event.channel.onmessage = (event) => {
+          emit(JSON.parse(event.data))
+        }
+        event.channel.onclose = () => {
+          setRTCDataChannelState(event.channel.readyState)
+          emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have left chat!', sendedAt: new Date() })
+        }
+      }
+    }
+  }
+
   const initMedia = async () => {
     const videoEl = videoSelfRef.current
-    if (!videoEl || !navigator.mediaDevices || (pendingRTCConfig.current || RTCConfig)) return
+    if (!videoEl || !navigator.mediaDevices || (pendingRTCConfig.current || RTCConfig)) {
+      setIsMediaPending(false)
+      return
+    }
 
     try {
       pendingRTCConfig.current = true
       if (localStream.current) {
         localStream.current.getTracks().forEach(t => t.stop())
       }
-
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      
       videoEl.srcObject = stream
       localStream.current = stream 
-      
-      setIsVideoEnabled(true)
-      setIsAudioEnabled(true)
-
       const turnCredentials = await getTurnCredentials()
 
       const config: RTCConfiguration = {
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
           { urls: "stun:stun1.l.google.com:19302" },
+          { urls: "stun:stun2.l.google.com:19302" },
+          { urls: "stun:stun3.l.google.com:19302" },
+          { urls: "stun:stun4.l.google.com:19302" },
           { urls: "stun:stun.flappychat.com:3478" },
           ...turnCredentials.iceServers,
         ],
         iceTransportPolicy: 'all',
         iceCandidatePoolSize: 10
       }
-      
+
+      setIsVideoEnabled(true)
+      setIsAudioEnabled(true)
+
+      try {
+        await videoEl.play()
+      } catch (playErr) {
+        console.error('Failed to play video:', playErr)
+      }
+    
       const pc = new RTCPeerConnection(config)
       peerConnection.current = pc
-
-      if (role === 'host') {
-        const dataChannel = pc.createDataChannel('chat')
-        dataChannelRef.current = dataChannel
-        dataChannel.onopen = () => {
-          console.log('Data channel is open')
-        }
-        dataChannel.onmessage = (event) => {
-          console.log('Data channel message:', event.data)
-        }
-        dataChannel.onclose = () => {
-          console.log('Data channel is closed')
-        }
-      }
-
-      pc.ondatachannel = (event) => {
-        dataChannelRef.current = event.channel
-        console.log('Data channel created:', event.channel)
-        event.channel.onopen = () => {
-          console.log('Data channel is open')
-        }
-
-        event.channel.onmessage = (event) => {
-          console.log('Data channel message:', event.data)
-        }
-
-        event.channel.onclose = () => {
-          console.log('Data channel is closed')
-        }
-      }
 
       pc.oniceconnectionstatechange = () => {
         const state = pc.iceConnectionState
@@ -174,11 +200,12 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
         }
       }
       
-      stream.getTracks().forEach(track => {
+      localStream.current.getTracks().forEach(track => {
         track.enabled = true
-        pc.addTrack(track, stream)
+        if(!localStream.current) return
+        pc.addTrack(track, localStream.current)
       })
-
+      
       if (pendingOffer.current) {
         const storedOffer = pendingOffer.current
         pendingOffer.current = null
@@ -199,16 +226,18 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
         for (const candidate of pendingIceCandidates.current) {
           await pc.addIceCandidate(new RTCIceCandidate(candidate))
         }
-        pendingIceCandidates.current = [];
+        pendingIceCandidates.current = []
       }
-
-      setIsMediaReady(true)
-
     } catch (err) {
       console.error('Failed to initialize media:', err)
-      onError('Failed to access camera/microphone')
+      setIsChatOnly(true)
+      setIsMediaPending(false)
+    } finally {
+      pendingRTCConfig.current = false
     }
-    pendingRTCConfig.current = false
+    
+    setIsMediaReady(true)
+    setIsMediaPending(false)
   }
 
 
@@ -216,11 +245,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     if (!socket) return
     
     const processOffer = async (pc: RTCPeerConnection, offerData: RTCSessionDescriptionInit) => {
-      if (!pc) return;
-      if (isOfferer.current) {
-        window.location.reload()
-        return
-      }
+      if (!pc) return
       if (pc.signalingState !== 'stable') {
         console.warn('Cannot process offer, signaling state:', pc.signalingState)
         return
@@ -228,7 +253,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       try {
         await pc.setRemoteDescription(new RTCSessionDescription(offerData))
         for (const candidate of pendingIceCandidates.current) {
-          await pc.addIceCandidate(new RTCIceCandidate(candidate));
+          await pc.addIceCandidate(new RTCIceCandidate(candidate))
         }
         pendingIceCandidates.current = []
         
@@ -247,7 +272,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       } else {
         pendingOffer.current = offer
         setTimeout(() => {
-          const pcRetry = peerConnection.current;
+          const pcRetry = peerConnection.current
           if (pcRetry && pendingOffer.current) {
             const storedOffer = pendingOffer.current
             pendingOffer.current = null
@@ -297,7 +322,8 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     }
 
     const handleUserJoined = async () => {
-      const pc = peerConnection.current;
+      const pc = peerConnection.current
+      if (roleRef.current === 'host') initWebRTCData('host')
       if (pc && pc.signalingState === 'stable') {
         isOfferer.current = true
         const offer = await pc.createOffer()
@@ -314,11 +340,19 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       clearRefs()
     }
 
-    const handleJoin = (data: { role: 'host' | 'guest' }) => {
+    const handleJoin = async (data: { role: 'host' | 'guest' }) => {
+      roleRef.current = data.role
       setRole(data.role)
+      if (roleRef.current === 'guest') initWebRTCData('guest')
+    }
+
+    const handleRoomCreated = () => {
+      roleRef.current = 'host'
+      setRole('host')
     }
 
     socket.on('userjoined', handleUserJoined)
+    socket.on('joinedashost', handleRoomCreated)
     socket.on('joinroom', handleJoin)
     socket.on('joinerror', handleJoinError)
     socket.on('icecandidate', handleIceCandidate)
@@ -327,6 +361,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
 
     return () => {
       socket.off('userjoined', handleUserJoined)
+      socket.off('joinedashost', handleRoomCreated)
       socket.off('joinroom', handleJoin)
       socket.off('joinerror', handleJoinError)
       socket.off('icecandidate', handleIceCandidate)
@@ -335,10 +370,18 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     }
   }, [socket, onError])
 
-  const joinRoom = (userName: string) => {
-    if (!socket || joined.current || !userName) return
-    socket.emit('joinroom', { roomId, name: userName })
+  const joinRoom = () => {
+    if (!socket || joined.current) return
+    socket.emit('joinroom', { roomId })
     joined.current = true
+    setJoinedRoom(true)
+    closeJoinModal()
+  }
+
+  const emitMessage = (message: Message) => {
+    if (dataChannelRef.current) {
+      dataChannelRef.current.send(JSON.stringify(message))
+    }
   }
 
   return {
@@ -348,10 +391,14 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     isVideoEnabled,
     isAudioEnabled,
     isMediaReady,
+    isMediaPending,
     toggleVideo,
     toggleAudio,
     initMedia,
     joinRoom,
-    clearRefs
+    clearRefs,
+    emitMessage,
+    RTCDataChannelState,
+    isChatOnly
   }
 }

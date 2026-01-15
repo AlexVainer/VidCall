@@ -1,0 +1,58 @@
+@mixin smooth-ui($props...) {
+    transition-property: $props;
+    transition-duration: 220ms;
+    transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@mixin fade-in($duration: 200ms) {
+    opacity: 0;
+    transition: opacity $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@mixin slide-scale(
+    $y: 16px,
+    $scale: 0.5,
+    $duration: 240ms
+) {
+    transform: translateY($y) scale($scale);
+    transition: transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@mixin modal-enter {
+    opacity: 0;
+    transform: translateY(16px) scale(0.5);
+}
+
+@mixin modal-active($duration: 240ms) {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition:
+    opacity $duration cubic-bezier(0.16, 1, 0.3, 1),
+    transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@mixin error-slide($distance: 5px, $duration: 200ms) {
+  opacity: 0;
+  transform: translateY(-$distance);
+  transition:
+    opacity $duration cubic-bezier(0.16, 1, 0.3, 1),
+    transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@mixin shake-x(
+  $name: shake-x,
+  $distance: 6px,
+  $duration: 400ms
+) {
+  animation: #{$name} $duration ease-out both;
+
+  @keyframes #{$name} {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-$distance); }
+    30%  { transform: translateX($distance); }
+    45%  { transform: translateX(-($distance * 0.6)); }
+    60%  { transform: translateX($distance * 0.6); }
+    75%  { transform: translateX(-($distance * 0.3)); }
+    100% { transform: translateX(0); }
+  }
+}

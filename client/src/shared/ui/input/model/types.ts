@@ -6,4 +6,5 @@ export interface InputProps {
     placeholder?: string,
     type?: string,
     title?: string,
+    onEnter?: () => void
 } 

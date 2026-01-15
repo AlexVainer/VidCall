@@ -1,44 +1,20 @@
-import { Modal, Input, Button } from '@/shared'
-import { useJoinRoom } from "../model/useJoinRoom"
+import { Modal, Button } from '@/shared'
+import { useModalStore } from "@/entities"
+import type { JoinRoomModalProps } from '../model/types'
+import styles from './JoinRoomModal.module.scss'
 
-export const JoinRoomModal = () => {
-  const { 
-    roomId, 
-    name, 
-    error, 
-    isFromPage, 
-    handleRoomIdChange, 
-    handleNameChange, 
-    handleJoin, 
-    closeModal 
-  } = useJoinRoom()
 
-  return (
-    <Modal onClose={closeModal} unclosable={isFromPage}>
-      {!isFromPage && (
-        <Input 
-          title="Room ID" 
-          placeholder="Room ID" 
-          value={roomId} 
-          onChange={handleRoomIdChange} 
-          error={error}
-        />
-      )}
-      
-      <Input 
-        title="Your name" 
-        placeholder="Your name" 
-        value={name} 
-        onChange={handleNameChange} 
-        error={error}
-      />
-      
-      <Button 
-        onClick={handleJoin} 
-        disabled={(!roomId.trim() && !isFromPage) || !name.trim()}
-      >
-        Join Room
-      </Button>
-    </Modal>
-  )
+export const JoinRoomModal = ({ join }: JoinRoomModalProps) => {
+    const { isJoinModalOpen } = useModalStore()
+
+    return (
+        <Modal unclosable={true} isOpen={isJoinModalOpen}>
+            <div className={styles.container}>
+                <div className={styles.title}>Check your settings</div>
+                <Button onClick={join}>
+                    Join Room
+                </Button>
+            </div>
+        </Modal>
+    )
 }
