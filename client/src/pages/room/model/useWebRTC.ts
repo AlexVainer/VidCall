@@ -140,6 +140,11 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       return
     }
 
+    dataChannelRef.current?.close()
+    dataChannelRef.current = null
+    peerConnection.current?.close()
+    peerConnection.current = null
+
     try {
       pendingRTCConfig.current = true
       if (localStream.current) {
@@ -178,6 +183,11 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
 
       pc.oniceconnectionstatechange = () => {
         const state = pc.iceConnectionState
+        if (state === 'connected') {
+        }
+        if (state === 'disconnected') {
+          reconnectWebRTC()
+        }
         if (state === 'failed') {
           console.error('ICE connection FAILED')
           onError('Connection failed. Please check your network.')
@@ -239,6 +249,18 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     
     setIsMediaReady(true)
     setIsMediaPending(false)
+  }
+
+  const reconnectWebRTC = async () => {
+    emit({ type: 'system', id: uuidv4(), text: 'Recreating peer connection...', sendedAt: new Date() })
+
+    try {
+      await initMedia()
+      
+      emit({ type: 'system', id: uuidv4(), text: 'Recreated peer successfully!', sendedAt: new Date() })
+    } catch (err) {
+      emit({ type: 'system', id: uuidv4(), text: 'Recreating peer failed!', sendedAt: new Date() })
+    }
   }
 
 

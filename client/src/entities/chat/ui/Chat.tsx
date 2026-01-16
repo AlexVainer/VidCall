@@ -38,7 +38,7 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
                     <IconButton icon="send" square onClick={handleSend} disabled={!messageText} />
                 </div>
             </div>
-            {isDataChanelReady ? null : <div className={styles.connecting}>Waiting for connection...</div>}
+            {isDataChanelReady ? null : <div className={styles.connecting}>Waiting for a participant...</div>}
         </div>
     )
 }
