@@ -1,5 +1,5 @@
 import session from "express-session"
-import { SESSION_SECRET } from "../../config.ts"
+import { SESSION_SECRET } from "../../config.js"
 
 if (!SESSION_SECRET) {
     throw new Error("SESSION_SECRET is not defined")

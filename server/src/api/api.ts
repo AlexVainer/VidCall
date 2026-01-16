@@ -1,9 +1,9 @@
 import crypto from 'crypto'
 import type { Request, Response, NextFunction } from 'express'
 import { v4 as uuidv4 } from 'uuid'
-import { app } from '../lib/app/index.ts'
-import { sessionMiddleware } from '../lib/session/index.ts'
-import { TURN_SECRET, TURN_DOMAIN } from '../config.ts'
+import { app } from '../lib/app/index.js'
+import { sessionMiddleware } from '../lib/session/index.js'
+import { TURN_SECRET, TURN_DOMAIN } from '../config.js'
 
 app.use(sessionMiddleware)
 
