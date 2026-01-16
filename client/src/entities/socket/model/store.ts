@@ -1,4 +1,4 @@
-import { io, type Socket } from "socket.io-client";
+import { io, type Socket } from "socket.io-client"
 import { create } from "zustand"
 
 interface SocketStore {

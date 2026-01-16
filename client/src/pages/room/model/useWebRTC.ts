@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react"
+import { v4 as uuidv4 } from 'uuid'
 import { useSocketStore, useRoomStore, useModalStore, type Message, useChatStore } from "@/entities"
 
 type onErrorType = (message: string) => void
@@ -105,28 +106,28 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       dataChannelRef.current = dataChannel
       dataChannel.onopen = () => {
         setRTCDataChannelState(dataChannel.readyState)
-        emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have joined chat!', sendedAt: new Date() })
+        emit({ type: 'system', id: uuidv4(), text: 'You have joined chat!', sendedAt: new Date() })
       }
       dataChannel.onmessage = (event) => {
           emit(JSON.parse(event.data))
       }
       dataChannel.onclose = () => {
         setRTCDataChannelState(dataChannel.readyState)
-        emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have left chat!', sendedAt: new Date() })
+        emit({ type: 'system', id: uuidv4(), text: 'You have left chat!', sendedAt: new Date() })
       }
     } else if (dataRole === 'guest') {
       pc.ondatachannel = (event) => {
         dataChannelRef.current = event.channel
         event.channel.onopen = () => {
           setRTCDataChannelState(event.channel.readyState)
-          emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have joined chat!', sendedAt: new Date() })
+          emit({ type: 'system', id: uuidv4(), text: 'You have joined chat!', sendedAt: new Date() })
         }
         event.channel.onmessage = (event) => {
           emit(JSON.parse(event.data))
         }
         event.channel.onclose = () => {
           setRTCDataChannelState(event.channel.readyState)
-          emit({ type: 'system', id: Math.random().toString(36).substr(2, 9), text: 'You have left chat!', sendedAt: new Date() })
+          emit({ type: 'system', id: uuidv4(), text: 'You have left chat!', sendedAt: new Date() })
         }
       }
     }

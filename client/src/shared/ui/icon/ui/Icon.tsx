@@ -1,8 +1,8 @@
-import { icons } from "../config/icons";
-import type { IconProps } from "../model/types";
+import { icons } from "../config/icons"
+import type { IconProps } from "../model/types"
 
 export const Icon = ({ name, size = 24, color, ...props }: IconProps) => {
-  const IconComponent = icons[name];
+  const IconComponent = icons[name]
   
   return (
     <IconComponent
@@ -11,5 +11,5 @@ export const Icon = ({ name, size = 24, color, ...props }: IconProps) => {
       fill={color}
       {...props}
     />
-  );
+  )
 }

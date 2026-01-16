@@ -34,26 +34,26 @@ app.post('/api/room', (req, res) => {
         secure: true,   
         sameSite: "lax",
         maxAge: 60 * 60 * 1000
-    });
+    })
 
-    res.json({ roomId });
+    res.json({ roomId })
 })
 
 app.post('/api/turn', (req, res) => {
-    const roomId = req.cookies["x-room-id"];
+    const roomId = req.cookies["x-room-id"]
 
     if (!roomId) {
-        return res.status(403).json({ error: "no room" });
+        return res.status(403).json({ error: "no room" })
     }
-    const ttl = 3600;
-    const username = `${Math.floor(Date.now() / 1000) + ttl}`;
+    const ttl = 3600
+    const username = `${Math.floor(Date.now() / 1000) + ttl}`
     if (!TURN_SECRET) {
         throw new Error("TURN_SECRET is not defined")
     }
     const credential = crypto
         .createHmac("sha1", TURN_SECRET)
         .update(username)
-        .digest("base64");
+        .digest("base64")
     
     res.json({
         iceServers: [

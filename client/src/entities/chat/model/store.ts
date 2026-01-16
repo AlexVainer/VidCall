@@ -3,7 +3,7 @@ import type { Message } from "./types"
 
 interface ChatStore {
     messages: Message[];
-    dataChannelState: 'open' | 'closed' | 'connecting' | 'failed';
+    dataChannelState: 'open' | 'closed' | 'connecting' | 'failed';  
     emit: (message: Message) => void;
 }
 
