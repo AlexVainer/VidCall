@@ -18,8 +18,9 @@
 .modal {
     position: fixed;
     inset: 0;
-    display: grid;
-    place-items: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     pointer-events: none;
     z-index: 999;
     padding: 30px;
@@ -31,7 +32,8 @@
     &__content {
         position: relative;
         width: 680px;
-        height: 580px;
+        height: 600px;
+        min-height: 600px;
         
         background-color: rgba(37, 30, 30, 0.866);
         padding: 20px;
@@ -80,7 +82,8 @@
 @media (max-width: 768px) {
     .modal__content {
         width: 95%;
-        height: 500px;
+        height: 120dvw;
+        min-height: auto;
     }
 
     button {

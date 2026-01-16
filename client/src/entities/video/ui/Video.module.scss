@@ -24,12 +24,12 @@
 
     &__modal {
         position: fixed;
-        top: 50%;
+        top: 100px;
         left: 50%;
         width: 600px;
         height: 400px;
         z-index: 1000;
-        transform: translate(-50%, -50%);
+        transform: translateX(-50%);
     }
 }
 
@@ -43,7 +43,11 @@
 
 @media (max-width: 768px) {
     .localVideo__modal {
-        width: 70%;
+        width: 75%;
+        min-width: 200px;
         height: auto;
+        top: 100px;
+        left: 50%;
+        transform: translateX(-50%);
     }
 }
