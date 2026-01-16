@@ -19,7 +19,6 @@ if (process.env.NODE_ENV === 'development') {
         ws: true
     })
     app.use('/', (req, res, next) => {
-        console.log('////////')
         proxyMiddleware(req, res, next)
     })
 } else if (NODE_ENV === 'production') {
