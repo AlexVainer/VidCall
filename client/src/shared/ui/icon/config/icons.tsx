@@ -1,5 +1,5 @@
 
-import type { IconName } from '../model/types';
+import type { IconName } from '../model/types'
 
 export const icons: Record<IconName, React.FC<React.SVGProps<SVGSVGElement>>> = {
     'close': (props) => (

@@ -70,7 +70,7 @@ export const wsHandler = (socket: Socket, io: Server) => {
             const room = findRoom(roomId)
 
             if (!room) {
-                saveRoom({ roomId, users: [ { socketId: socket.id, role } ] });
+                saveRoom({ roomId, users: [ { socketId: socket.id, role } ] })
             } else if (!room.users.some(user => user.socketId === socket.id)) {
                 room.users.push({ socketId: socket.id, role })
                 saveRoom(room)
@@ -93,7 +93,7 @@ export const wsHandler = (socket: Socket, io: Server) => {
         socket.join(userId)
         
         if (!findRoom(userId)) {
-            saveRoom({ roomId: userId, users: [ { socketId: socket.id, role: 'host' } ] });
+            saveRoom({ roomId: userId, users: [ { socketId: socket.id, role: 'host' } ] })
         }
         const room = findRoom(userId)
         socket.emit('roomcreated', { roomId: userId, users: room?.users })

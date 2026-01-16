@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { v4 as uuidv4 } from 'uuid'
 import { useChatStore, type Message } from "@/entities"
 import { IconButton, Input } from "@/shared"
 import type { ChatProps } from "../model/types"
@@ -15,7 +16,7 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
 
     const handleSend = () => {
         if(!messageText) return
-        const message: Message = { id: Math.random().toString(36).substr(2, 9), text: messageText, sendedAt: new Date(), type: 'self'}
+        const message: Message = { id: uuidv4(), text: messageText, sendedAt: new Date(), type: 'self'}
         emitMessage({ ...message, type: 'remote' })
         emit({ ...message })
         setMessageText('')
@@ -24,7 +25,7 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
     return (
         <div className={styles.chatWrapper + (isJoined ? ' ' + styles.ready : "") + (isOpen ? ' ' + styles.opened : "")}>
             <div className={styles.cross}>
-                {isDataChanelReady && isOpen ? <IconButton icon="close" square onClick={onClose} /> : null}
+                {isJoined && isOpen ? <IconButton icon="close" square onClick={onClose} /> : null}
             </div>
             <div className={styles.innerChat}>
                 <div className={styles.messagesContainer}>
