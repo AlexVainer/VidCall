@@ -36,11 +36,16 @@
     display: none;
 }
 
+.chatContainer {
+    width: 400px;
+    height: 100%;
+}
 
-@media (max-width: 768px) {
-    .videoContainer {
-        flex-direction: column;
+@media (max-width: 1024px) {
+    .chatContainer {
+        position: fixed;
     }
+
     .chatIcon {
         display: block;
         top: 35px;
@@ -48,3 +53,8 @@
     }
 }
 
+@media (max-width: 768px) {
+    .videoContainer {
+        flex-direction: column;
+    }
+}
