@@ -4,9 +4,12 @@ import { Button } from "@/shared"
 import { Modal } from "@/shared"
 import type { ErrorModalProps } from "../models/types"
 import styles from './ErrorModal.module.scss'
+import { useTranslation } from 'react-i18next'
+
 
 export const ErrorModal = ({ onClose, error }: ErrorModalProps) => {
     const { modalError, setModalError, isErrorModalOpen } = useModalStore()
+    const { t } = useTranslation()
 
     const handleClose = () => {
         setModalError('')
@@ -18,7 +21,7 @@ export const ErrorModal = ({ onClose, error }: ErrorModalProps) => {
                 <p className={styles.errorMessage}>{error || modalError}</p>
             </div>
             <Link to="/" className={styles.homeLink}>
-                <Button onClick={handleClose}>Home</Button>
+                <Button onClick={handleClose}>{t('home')}</Button>
             </Link>
         </Modal>
     )
