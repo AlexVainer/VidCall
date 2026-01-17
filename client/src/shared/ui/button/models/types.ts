@@ -6,6 +6,7 @@ export interface ButtonProps {
     disabled?: boolean
     square?: boolean
     liquid?: boolean
+    isActive?: boolean
 }
 
 export interface IconButtonProps {
@@ -17,5 +18,6 @@ export interface IconButtonProps {
     liquid?: boolean
     className?: string
     size?: number
+    isActive?: boolean
 }
 

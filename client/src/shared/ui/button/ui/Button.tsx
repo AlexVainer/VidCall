@@ -2,9 +2,9 @@ import type { ButtonProps, IconButtonProps } from "../models/types"
 import styles from './Button.module.scss'
 import { Icon } from "../../icon/ui/Icon"
 
-export const Button = ({ children, onClick, disabled, square, liquid }: ButtonProps) => {
+export const Button = ({ children, onClick, disabled, square, liquid, isActive }: ButtonProps) => {
     return (
-        <button onClick={onClick} className={`${styles.button} ${disabled ? styles.disabled : ''} ${square ? styles.square : ''} ${liquid ? styles.liquid : ''}`}>
+        <button onClick={onClick} className={`${styles.button} ${disabled ? styles.disabled : ''} ${square ? styles.square : ''} ${liquid ? styles.liquid : ''} ${isActive ? styles.active : ''}`}>
             {children}
         </button>
     )

@@ -30,7 +30,7 @@ export const RemoteVideo = ({videoRef, isJoined}: RemoteVideoProps) => {
             /> 
 
             {isJoined ? <div className={styles.controls}>
-                <IconButton icon={isMuted ? 'mute-off' : 'mute-on'} onClick={toggleMute} square liquid />
+                <IconButton icon={isMuted ? 'mute-on' : 'mute-off'} isActive={!isMuted} onClick={toggleMute} square liquid />
             </div> : null}
         </div>
     )

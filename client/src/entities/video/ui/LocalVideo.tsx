@@ -13,15 +13,14 @@ export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, isVideoEnabled, 
             playsInline 
             muted 
             className={styles.video}
-            style={{transform: 'scale(-1,1)'}} 
-            onClick={toggleVideo}
+            style={{transform: 'scale(-1,1)'}}
             onContextMenu={toggleAudio}
             /> 
 
             <div className={styles.controls}>
-                <IconButton icon={isVideoEnabled ? 'video-off' : 'video-on'} onClick={toggleVideo} square={true} liquid={true} />
+                <IconButton icon={isVideoEnabled ? 'video-on' : 'video-off'} isActive={isVideoEnabled} onClick={toggleVideo} square liquid />
                 
-                <IconButton icon={isAudioEnabled ? 'mic-off' : 'mic-on'} onClick={toggleAudio} square={true} liquid={true} />
+                <IconButton icon={isAudioEnabled ? 'mic-on' : 'mic-off'} isActive={isAudioEnabled} onClick={toggleAudio} square liquid />
             </div>
         </div>)
 }
