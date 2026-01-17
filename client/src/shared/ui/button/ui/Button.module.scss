@@ -69,4 +69,25 @@
         background-color: $darkButtonDisabled;
         cursor: not-allowed;
     }
+
+    &.active {
+        background: rgba(54, 43, 214, 0.59);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5.8px);
+        -webkit-backdrop-filter: blur(5.8px);
+
+        &:hover {
+            background: rgba(41, 29, 209, 0.59);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5.8px);
+            -webkit-backdrop-filter: blur(5.8px);
+        }   
+
+        &:active {
+            background: rgba(41, 29, 209, 0.59);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(5.8px);
+            -webkit-backdrop-filter: blur(5.8px);
+        }
+    }
 }
