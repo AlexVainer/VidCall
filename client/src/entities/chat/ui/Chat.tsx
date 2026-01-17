@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from 'uuid'
 import { useChatStore, type Message } from "@/entities"
 import { IconButton, Input } from "@/shared"
@@ -9,6 +10,7 @@ import { MessageItem } from "./Message"
 export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen }: ChatProps) => {
     const { messages, emit } = useChatStore()
     const [messageText, setMessageText] = useState('')
+    const { t } = useTranslation()
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(e.target.value)
@@ -38,7 +40,7 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
                     <IconButton icon="send" square onClick={handleSend} disabled={!messageText} />
                 </div>
             </div>
-            {isDataChanelReady ? null : <div className={styles.connecting}>Waiting for a participant...</div>}
+            {isDataChanelReady ? null : <div className={styles.connecting}>{t('chatPending')}</div>}
         </div>
     )
 }

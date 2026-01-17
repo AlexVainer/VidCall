@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { v4 as uuidv4 } from 'uuid'
+import { useTranslation } from "react-i18next"
 import { useSocketStore, useRoomStore, useModalStore, type Message, useChatStore } from "@/entities"
 
 type onErrorType = (message: string) => void
@@ -9,6 +10,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const { closeJoinModal } = useModalStore()
   const { role, setRole, setRoomParamId, setCheckedRoom, setJoinedRoom } = useRoomStore()
   const { emit } = useChatStore()
+  const { t } = useTranslation()
 
   const videoSelfRef = useRef<HTMLVideoElement>(null)
   const videoRemoteRef = useRef<HTMLVideoElement>(null)
@@ -106,28 +108,28 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       dataChannelRef.current = dataChannel
       dataChannel.onopen = () => {
         setRTCDataChannelState(dataChannel.readyState)
-        emit({ type: 'system', id: uuidv4(), text: 'You have joined chat!', sendedAt: new Date() })
+        emit({ type: 'system', id: uuidv4(), text: t('dataChannelOpen'), sendedAt: new Date() })
       }
       dataChannel.onmessage = (event) => {
           emit(JSON.parse(event.data))
       }
       dataChannel.onclose = () => {
         setRTCDataChannelState(dataChannel.readyState)
-        emit({ type: 'system', id: uuidv4(), text: 'You have left chat!', sendedAt: new Date() })
+        emit({ type: 'system', id: uuidv4(), text: t('dataChannelClosed'), sendedAt: new Date() })
       }
     } else if (dataRole === 'guest') {
       pc.ondatachannel = (event) => {
         dataChannelRef.current = event.channel
         event.channel.onopen = () => {
           setRTCDataChannelState(event.channel.readyState)
-          emit({ type: 'system', id: uuidv4(), text: 'You have joined chat!', sendedAt: new Date() })
+          emit({ type: 'system', id: uuidv4(), text: t('dataChannelOpen'), sendedAt: new Date() })
         }
         event.channel.onmessage = (event) => {
           emit(JSON.parse(event.data))
         }
         event.channel.onclose = () => {
           setRTCDataChannelState(event.channel.readyState)
-          emit({ type: 'system', id: uuidv4(), text: 'You have left chat!', sendedAt: new Date() })
+          emit({ type: 'system', id: uuidv4(), text: t('dataChannelClosed'), sendedAt: new Date() })
         }
       }
     }
@@ -190,7 +192,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
         }
         if (state === 'failed') {
           console.error('ICE connection FAILED')
-          onError('Connection failed. Please check your network.')
+          onError(t('networkError'))
         }
       }
       
@@ -252,14 +254,14 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   }
 
   const reconnectWebRTC = async () => {
-    emit({ type: 'system', id: uuidv4(), text: 'Recreating peer connection...', sendedAt: new Date() })
+    emit({ type: 'system', id: uuidv4(), text: t('recreatingRTC'), sendedAt: new Date() })
 
     try {
       await initMedia()
       
-      emit({ type: 'system', id: uuidv4(), text: 'Recreated peer successfully!', sendedAt: new Date() })
+      emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCSuccess'), sendedAt: new Date() })
     } catch (err) {
-      emit({ type: 'system', id: uuidv4(), text: 'Recreating peer failed!', sendedAt: new Date() })
+      emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCFailed'), sendedAt: new Date() })
     }
   }
 

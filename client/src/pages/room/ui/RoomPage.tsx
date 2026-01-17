@@ -7,6 +7,7 @@ import { Chat, LocalVideo, RemoteVideo } from "@/entities"
 import { JoinRoomModal } from "@/features"
 import { IconButton } from "@/shared"
 
+
 export const RoomPage = () => {
     const { roomId } = useParams<{ roomId: string }>()
     const { setModalError, modalError, openJoinModal, isJoinModalOpen } = useModalStore()
