@@ -101,7 +101,9 @@ export const RoomPage = () => {
 
                     <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
                 </div>
-                <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} onClose={() => setIsChatOpen(false)} isOpen={isChatOpen} />
+                <div className={styles.chatContainer}>
+                    <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} onClose={() => setIsChatOpen(false)} isOpen={isChatOpen} />
+                </div>
                 {joinedRoom && !isChatOpen && <div className={styles.chatIcon}>
                     <IconButton icon="chat" square onClick={() => setIsChatOpen(true)} />
                 </div>}
