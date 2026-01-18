@@ -1,3 +1,5 @@
+@use '@/app/styles' as *;
+
 .page {
     display: flex;
     flex-direction: row;
@@ -7,11 +9,18 @@
 
 .container {
     width: 100%;
-    gap: 16px;
+    gap: 20px;
     display: flex;
     flex-direction: row;
     height: 100dvh;
     padding: 24px;
+}
+
+.leftContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
 }
 
 .videoContainer {
@@ -23,6 +32,7 @@
     height: 100%;
     border-radius: 12px;
     overflow: hidden;
+    box-shadow: $shadow;
 }
 
 .videoContainer video {
@@ -34,6 +44,10 @@
 .chatIcon {
     position: fixed;
     display: none;
+    
+    button {
+        height: 50px;
+    }
 }
 
 .chatContainer {
@@ -48,13 +62,18 @@
 
     .chatIcon {
         display: block;
-        top: 35px;
-        right: 35px;
+        top: 38px;
+        right: 38px;
+        z-index: 101;
     }
 }
 
 @media (max-width: 768px) {
     .videoContainer {
         flex-direction: column;
+    }
+
+    .chatIcon p {
+        display: none;
     }
 }

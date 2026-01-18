@@ -10,7 +10,7 @@ export const JoinRoomModal = ({ join }: JoinRoomModalProps) => {
     const { t } = useTranslation()
 
     return (
-        <Modal unclosable={true} isOpen={isJoinModalOpen}>
+        <Modal unclosable isOpen={isJoinModalOpen}>
             <div className={styles.container}>
                 <div className={styles.title}>{t('joinModalTitle')}</div>
                 <Button onClick={join}>

@@ -1,7 +1,7 @@
+import { useTranslation } from "react-i18next"
+import { useCreateRoom } from "../model/useCreateRoom"
 import styles from './RoomTabs.module.scss'
 import { Tab } from "./Tab"
-import { useCreateRoom } from "../model/useCreateRoom"
-import { useTranslation } from "react-i18next"
 
 export const RoomTabs = () => {
     const { handleCreate } = useCreateRoom()

@@ -12,7 +12,7 @@ import path from 'path'
 const server = http.createServer(app)
 const io = new Server(server)
 
-if (process.env.NODE_ENV === 'development') {
+if (NODE_ENV === 'development') {
     const proxyMiddleware = createProxyMiddleware({
         target: CLIENT_URL,
         changeOrigin: true,
@@ -28,6 +28,10 @@ if (process.env.NODE_ENV === 'development') {
     app.use(
         '/assets',
         express.static(path.join(DIST_PATH, 'assets'))
+    )
+    app.use(
+        '/public',
+        express.static(path.join(DIST_PATH, '../public'))
     )
 }
 
