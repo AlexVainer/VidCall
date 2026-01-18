@@ -6,6 +6,8 @@ import styles from './RoomPage.module.scss'
 import { Chat, LocalVideo, RemoteVideo } from "@/entities"
 import { JoinRoomModal } from "@/features"
 import { IconButton } from "@/shared"
+import { Settings } from "@/widgets"
+import { useTranslation } from "react-i18next"
 
 
 export const RoomPage = () => {
@@ -33,6 +35,8 @@ export const RoomPage = () => {
         RTCDataChannelState
     } = useWebRTC(roomId || '', setModalError)
     
+    const { t } = useTranslation()
+
     useEffect(() => {
         if (!roomId) {
             setModalError('Room ID is required')
@@ -89,6 +93,10 @@ export const RoomPage = () => {
         }
     }, [])
 
+    const toggleChat = () => {
+        setIsChatOpen(!isChatOpen)
+    }
+
     if (modalError || !isRoomChecked) return null
 
     return (
@@ -96,16 +104,22 @@ export const RoomPage = () => {
             <JoinRoomModal join={joinRoom} />
 
             <div className={styles.container}>
-                <div className={styles.videoContainer}>
-                    <LocalVideo videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} modal={isJoinModalOpen} />
+                <div className={styles.leftContainer}>
+                    <Settings />
 
-                    <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                    <div className={styles.videoContainer}>
+                        <LocalVideo videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} modal={isJoinModalOpen} />
+
+                        <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                    </div>
                 </div>
                 <div className={styles.chatContainer}>
-                    <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} onClose={() => setIsChatOpen(false)} isOpen={isChatOpen} />
+                    <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} isOpen={isChatOpen} />
                 </div>
-                {joinedRoom && !isChatOpen && <div className={styles.chatIcon}>
-                    <IconButton icon="chat" square onClick={() => setIsChatOpen(true)} />
+                {joinedRoom && <div className={styles.chatIcon}>
+                    <IconButton icon={isChatOpen ? 'close' : 'chat'} square onClick={toggleChat} >
+                        <p>{isChatOpen ? t('closeChat') : t('openChat')}</p>
+                    </IconButton>
                 </div>}
             </div> 
     </div>

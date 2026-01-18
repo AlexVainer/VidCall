@@ -1,6 +1,6 @@
+import { Icon } from "@/shared"
 import type { ModalProps } from '../model/types'
 import styles from './Modal.module.scss'
-import { Icon } from "@/shared"
 
 
 export const Modal = ({ children, onClose, unclosable, isOpen, fullSize }: ModalProps) => {

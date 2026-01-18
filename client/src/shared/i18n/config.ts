@@ -20,8 +20,7 @@ i18n
     detection: {
       order: ['navigator'],
       caches: ['localStorage']
-    },
-    debug: true
+    }
 })
 
 declare module "i18next" {

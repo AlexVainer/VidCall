@@ -2,7 +2,6 @@ export const en = {
     createRoom: "Create room",
     joinRoom: "Join room",
     joinModalTitle: "Check your settings",
-    home: "Home",
     dataChannelOpen: "Data channel opened!",
     dataChannelClosed: "Data channel closed!",
     networkError: "Connection failed. Please check your network.",
@@ -10,4 +9,14 @@ export const en = {
     recreatingRTCFailed: "Recreating peer connection failed!",
     recreatingRTCSuccess: "Recreated peer successfully!",
     chatPending: "Waiting for a participant...",
+    share: "Share",
+    copyLink: "Copy link",
+    shareLink: "Share link with participant",
+    closeChat: "Close chat",
+    openChat: "Open chat",
+    homePage: {
+        button: "Navigate home",
+        title: "Fast p2p video calls and chats",
+        description: "No registration, no download, just share the link.",
+    }
 }

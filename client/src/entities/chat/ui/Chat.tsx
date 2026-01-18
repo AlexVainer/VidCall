@@ -7,7 +7,7 @@ import type { ChatProps } from "../model/types"
 import styles from "./Chat.module.scss"
 import { MessageItem } from "./Message"
 
-export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen }: ChatProps) => {
+export const Chat = ({ isJoined, isDataChanelReady, emitMessage, isOpen }: ChatProps) => {
     const { messages, emit } = useChatStore()
     const [messageText, setMessageText] = useState('')
     const { t } = useTranslation()
@@ -17,7 +17,7 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
     }
 
     const handleSend = () => {
-        if(!messageText) return
+        if(!messageText || !isDataChanelReady) return
         const message: Message = { id: uuidv4(), text: messageText, sendedAt: new Date(), type: 'self'}
         emitMessage({ ...message, type: 'remote' })
         emit({ ...message })
@@ -26,9 +26,6 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
 
     return (
         <div className={styles.chatWrapper + (isJoined ? ' ' + styles.ready : "") + (isOpen ? ' ' + styles.opened : "")}>
-            <div className={styles.cross}>
-                {isJoined && isOpen ? <IconButton icon="close" square onClick={onClose} /> : null}
-            </div>
             <div className={styles.innerChat}>
                 <div className={styles.messagesContainer}>
                     {isJoined ? messages?.map((message: Message) => (
@@ -37,10 +34,13 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, onClose, isOpen
                 </div>
                 <div className={styles.inputContainer}>
                     <Input value={messageText} onChange={handleChange} onEnter={handleSend} />
-                    <IconButton icon="send" square onClick={handleSend} disabled={!messageText} />
+                    <IconButton icon="send" square onClick={handleSend} disabled={!messageText || !isDataChanelReady} />
                 </div>
+                {isDataChanelReady ? null : <div className={styles.connecting}>
+                    <p>{t('chatPending')}</p>
+                    <p>{t('shareLink')}</p>
+                </div>}
             </div>
-            {isDataChanelReady ? null : <div className={styles.connecting}>{t('chatPending')}</div>}
         </div>
     )
 }
