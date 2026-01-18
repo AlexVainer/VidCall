@@ -31,7 +31,10 @@ if (NODE_ENV === 'development') {
     )
     app.use(
         '/public',
-        express.static(path.join(DIST_PATH, '../public'))
+        express.static(path.join(DIST_PATH, '../public'), {
+            maxAge: '30d',
+            immutable: true
+        })
     )
 }
 
