@@ -1,0 +1,34 @@
+name: Deploy to Server
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - closed
+
+jobs:
+  deploy:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e
+
+            cd ${{ secrets.PROJECT_PATH }}
+
+            git pull origin main
+
+            docker stop flappychat > /dev/null 2>&1 || true
+            docker rm flappychat > /dev/null 2>&1 || true
+
+            DOCKER_BUILDKIT=1 docker build -t flappychat .
+            docker image prune -af --filter "label!=keep"
+            docker run -d --name flappychat -p 3000:8080 --restart unless-stopped flappychat
