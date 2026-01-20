@@ -2,7 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'flappychat',
-      script: 'dist/app.js',
+      script: './dist/app.js',
       watch: true,
       exec_mode: 'fork',
       instances: 1,
