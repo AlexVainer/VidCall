@@ -25,10 +25,10 @@ jobs:
             cd ${{ secrets.PROJECT_PATH }}
 
             git pull origin main
-
             docker stop flappychat > /dev/null 2>&1 || true
             docker rm flappychat > /dev/null 2>&1 || true
 
             DOCKER_BUILDKIT=1 docker build -t flappychat .
-            docker image prune -af --filter "label!=keep"
-            docker run -d --name flappychat -p 3000:8080 --restart unless-stopped flappychat
+
+            docker run -d --name flappychat -p 3000:3000 flappychat
+
