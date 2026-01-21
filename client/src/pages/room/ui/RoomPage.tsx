@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react"
+import { useTranslation } from "react-i18next"
 import { useParams } from "react-router"
+import { Settings } from "@/widgets"
+import { JoinRoomModal } from "@/features"
+import { Chat, LocalVideo, RemoteVideo } from "@/entities"
 import { useModalStore, useRoomStore, checkRoomExists } from "@/entities"
+import { IconButton } from "@/shared"
 import { useWebRTC } from "../model/useWebRTC"
 import styles from './RoomPage.module.scss'
-import { Chat, LocalVideo, RemoteVideo } from "@/entities"
-import { JoinRoomModal } from "@/features"
-import { IconButton } from "@/shared"
-import { Settings } from "@/widgets"
-import { useTranslation } from "react-i18next"
 
 
 export const RoomPage = () => {
@@ -39,7 +39,6 @@ export const RoomPage = () => {
 
     useEffect(() => {
         if (!roomId) {
-            setModalError('Room ID is required')
             return
         }
         
@@ -61,10 +60,10 @@ export const RoomPage = () => {
                 setCheckedRoom(roomId)
                 return
             } else if (roomSize && roomSize.size > 1) {
-                setModalError('Room is full')
+                setModalError(t('roomIsFull'))
                 return
             } else {
-                setModalError('Room does not exist')
+                setModalError(t('roomNotExist'))
                 return
             }
         }
@@ -113,7 +112,7 @@ export const RoomPage = () => {
                         <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
                     </div>
                 </div>
-                <div className={styles.chatContainer}>
+                <div className={`${styles.chatContainer} ${isChatOpen ? styles.chatContainer__open : ''}`}>
                     <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} isOpen={isChatOpen} />
                 </div>
                 {joinedRoom && <div className={styles.chatIcon}>

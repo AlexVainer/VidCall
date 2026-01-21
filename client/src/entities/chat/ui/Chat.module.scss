@@ -46,6 +46,7 @@
 .messagesContainer {
     display: flex;
     flex-direction: column;
+    position: relative;
     width: 100%;
     height: 100%;
     gap: 20px;
@@ -65,13 +66,14 @@
         display: flex;
         flex-direction: column;
         text-align: end;
-        max-width: 200px;
-        min-width: 40px;
+        max-width: 220px;
+        min-width: 44px;
         word-break: break-word;
         padding: 6px;
         padding-bottom: 16px;
         background-color: $darkLight;
         border-radius: 12px;
+        gap: 10px;
     }
 
     &.self {
@@ -91,6 +93,7 @@
             background-color: unset;
             max-width: 100%;
             text-align: center;
+            color: #b4b4b4
         }
     }
 
@@ -101,15 +104,108 @@
         bottom: 4px;
         right: 5px;
     }
+
+    &__files {
+        display: flex;
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    &__file {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        background-color: $darkLight;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        padding: 8px;
+        width: 56px;
+        height: 56px;
+        overflow: hidden;
+        cursor: pointer;
+
+        span {
+            font-size: 10px;
+            width: 100%;
+            text-overflow: ellipsis;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        &:hover {
+            background-color: $darkButtonActive;
+            transform: scale(0.97);
+        }
+
+        &:active {
+            background-color: $darkButtonActive;
+            transform: scale(0.93);
+        }
+    }
 }
 
 .cross {
     display: none;
 }
 
+.connecting {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    background: rgba(202, 202, 202, 0.5);
+    font-size: 20px;
+    z-index: 999;
+    border-radius: 12px;
+
+    p {
+        text-align: center;
+        font-size: 25px;
+        font-weight: 800;
+        color: white;
+    }
+}
+
+.sendingFiles {
+    position: fixed;
+    width: 100%;
+    bottom: 100px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 5px 10px;
+    background-color: rgba(255,255,255,0.5);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    color:rgba(202, 202, 202, 1)
+
+
+    &__file {
+        width: 100%;
+        padding: 5px 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+}
+
+
 @media (max-width: 1024px) {
+    .message__content {
+        max-width: 60%;
+    }
     .chatWrapper {
-        position: fixed;
+        position: absolute;
         width: 100dvw;
         height: calc(100dvh - 100px);
         top: 100px;
@@ -131,25 +227,11 @@
         right: 35px;
         z-index: 1000;
     }
-}
+    .connecting {
+        display: none;
 
-.connecting {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    left: 0;
-    top: 0;
-    background: rgba(202, 202, 202, 0.5);
-    color: white;
-    font-size: 20px;
-    z-index: 999;
-    border-radius: 12px;
-
-    p {
-        text-align: center;
+        &__open {
+            display: flex;
+        }
     }
 }

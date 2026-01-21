@@ -2,6 +2,13 @@ import type { InputProps } from "../model/types"
 import styles from './Input.module.scss'
 
 export const Input = ({ ref, value, onChange, error, placeholder, type, title, onEnter }: InputProps) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            e.preventDefault()
+            onEnter?.()
+        }
+    }
+
     return (
         <div className={
             styles.input__container 
@@ -13,12 +20,7 @@ export const Input = ({ ref, value, onChange, error, placeholder, type, title, o
                 ref={ref}
                 value={value}
                 onChange={onChange}
-                onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault()
-                        onEnter?.()
-                    }
-                }}
+                onKeyDown={handleKeyDown}
                 className={styles.input + (error ? ' ' + styles.input__error : '')}
                 placeholder={placeholder}
                 type={type}

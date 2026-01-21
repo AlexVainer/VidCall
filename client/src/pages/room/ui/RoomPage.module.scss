@@ -51,13 +51,19 @@
 }
 
 .chatContainer {
-    width: 400px;
+    width: 500px;
     height: 100%;
 }
 
 @media (max-width: 1024px) {
     .chatContainer {
         position: fixed;
+        top: -100%;
+
+        &__open {
+            top: 0;
+            left: 0;
+        }
     }
 
     .chatIcon {
