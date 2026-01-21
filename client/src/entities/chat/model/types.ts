@@ -4,6 +4,7 @@ export interface Message {
     text: string;
     type: 'system' | 'remote' | 'self';
     sendedAt: Date;
+    files?: File[];
 }
 
 export interface ChatProps {

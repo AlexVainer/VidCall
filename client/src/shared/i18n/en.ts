@@ -2,6 +2,8 @@ export const en = {
     createRoom: "Create room",
     joinRoom: "Join room",
     joinModalTitle: "Check your settings",
+    roomNotExist: "Room does not exist",
+    roomFull: "Room is full",
     dataChannelOpen: "Data channel opened!",
     dataChannelClosed: "Data channel closed!",
     networkError: "Connection failed. Please check your network.",
@@ -18,5 +20,9 @@ export const en = {
         button: "Navigate home",
         title: "Fast p2p video calls and chats",
         description: "No registration, no download, just share the link.",
-    }
+    },
+    fileEmpty: "File {{fileName}} is empty, please select not a empty file.",
+    filesLimit: "You have reached the limit of files - 9.",
+    fileTooLarge: "File {{fileName}} is too large, please select a file smaller than 10MB.",
+    appendedFiles: "Appended files:"
 }

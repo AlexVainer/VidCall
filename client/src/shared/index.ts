@@ -1,5 +1,6 @@
 export { Modal } from './ui/modal/ui/Modal'
 export { Button, IconButton } from './ui/button/ui/Button'
 export { Input } from './ui/input/ui/Input'
+export { FileInput } from './ui/file-input/ui/FileInput'
 export { ErrorModal } from './ui/error-modal/ui/ErrorModal'
 export { Icon } from './ui/icon/ui/Icon'

@@ -1,0 +1,30 @@
+@use '@/app/styles' as *;
+
+.fileInput {
+    display: flex;
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    background-color: $darkButton;
+    @include smooth-ui(all);
+
+    &:hover {
+        background-color: $darkButtonHover;
+        transform: scale(0.95);
+    }
+
+    &:active {
+        background-color: $darkButtonActive;
+        transform: scale(0.90);
+    }
+
+    &__label {
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}

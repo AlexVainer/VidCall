@@ -13,7 +13,13 @@
     color: white;
     font-size: 16px;
     line-height: 19px;
-    outline: none;
+    outline: none;    
+    @include smooth-ui(all);
+
+    &:focus {
+        border-color: $lightColor;
+        transform: scale(1.07);
+    }
 
     &__error {
         border-color: red;
