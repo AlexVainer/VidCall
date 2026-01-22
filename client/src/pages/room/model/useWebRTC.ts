@@ -188,7 +188,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
           { urls: "stun:stun2.l.google.com:19302" },
           { urls: "stun:stun3.l.google.com:19302" },
           { urls: "stun:stun4.l.google.com:19302" },
-          { urls: "stun:stun.flappychat.com:3478" },
           ...turnCredentials.iceServers,
         ],
         iceTransportPolicy: 'all',

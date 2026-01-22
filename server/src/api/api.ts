@@ -62,7 +62,7 @@ app.post('/api/turn', (req, res) => {
                 urls: [
                     `turn:${TURN_DOMAIN}:3478?transport=udp`,
                     `turn:${TURN_DOMAIN}:3478?transport=tcp`,
-                    `turns:${TURN_DOMAIN}:5349`
+                    `turns:${TURN_DOMAIN}:5349?transport=tcp`
                 ],
                 username,
                 credential
