@@ -1,7 +1,7 @@
 export const en = {
     createRoom: "Create room",
     joinRoom: "Join room",
-    joinModalTitle: "Check your settings",
+    joinTitle: "Join the room",
     roomNotExist: "Room does not exist",
     roomFull: "Room is full",
     dataChannelOpen: "Data channel opened!",
@@ -24,5 +24,10 @@ export const en = {
     fileEmpty: "File {{fileName}} is empty, please select not a empty file.",
     filesLimit: "You have reached the limit of files - 9.",
     fileTooLarge: "File {{fileName}} is too large, please select a file smaller than 10MB.",
-    appendedFiles: "Appended files:"
+    appendedFiles: "Appended files:",
+    joinPending: "Waiting for join room...",
+    videoOff: "Turn off video",
+    audioOff: "Turn off audio",
+    videoOn: "Turn on video",
+    audioOn: "Turn on audio",
 }

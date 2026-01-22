@@ -6,12 +6,12 @@ import { useChat } from "../model/useChat"
 import styles from "./Chat.module.scss"
 import { MessageItem } from "./Message"
 
-export const Chat = ({ isJoined, isDataChanelReady, emitMessage, isOpen }: ChatProps) => {
+export const Chat = ({ isJoined, isMediaReady, isDataChanelReady, emitMessage, isOpen }: ChatProps) => {
     const { handleSend, handleFileSelect, messageText, files, inputRef, handleChange, messages } = useChat({ isDataChanelReady, emitMessage })
     const { t } = useTranslation()
 
     return (
-        <div className={styles.chatWrapper + (isJoined ? ' ' + styles.ready : "") + (isOpen ? ' ' + styles.opened : "")}>
+        <div className={styles.chatWrapper + (isMediaReady ? ' ' + styles.ready : "") + (isOpen ? ' ' + styles.opened : "")}>
             <div className={styles.innerChat}>
                 <div className={styles.messagesContainer}>
                     {isJoined ? messages?.map((message: Message) => (
@@ -33,8 +33,13 @@ export const Chat = ({ isJoined, isDataChanelReady, emitMessage, isOpen }: ChatP
                     <IconButton icon="send" square onClick={handleSend} disabled={(!messageText && !files.length) || !isDataChanelReady} />
                 </div>
                 {isDataChanelReady ? null : <div className={`${styles.connecting} ${isOpen ? styles.connecting__open : ''}`}>
-                    <p>{t('chatPending')}</p>
-                    <p>{t('shareLink')}</p>
+                    {isJoined 
+                        ? <>
+                            <p>{t('chatPending')}</p>
+                            <p>{t('shareLink')}</p>
+                        </>
+                        : <p>{t('joinPending')}</p>
+                    }
                 </div>}
             </div>
         </div>

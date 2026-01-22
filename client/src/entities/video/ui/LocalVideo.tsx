@@ -3,9 +3,9 @@ import type { LocalVideoProps } from "../model/types"
 import styles from "./Video.module.scss"
 
 
-export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, isVideoEnabled, isAudioEnabled, modal}: LocalVideoProps) => {
+export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, isVideoEnabled, isAudioEnabled, isJoined}: LocalVideoProps) => {
     return (
-        <div className={styles.localVideo + (modal ? ' ' + styles.localVideo__modal : '')}>
+        <div className={styles.localVideo}>
             <video 
             controls={false} 
             ref={videoRef} 
@@ -17,10 +17,10 @@ export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, isVideoEnabled, 
             onContextMenu={toggleAudio}
             /> 
 
-            <div className={styles.controls}>
+            {isJoined ? <div className={styles.controls}>
                 <IconButton icon={isVideoEnabled ? 'video-on' : 'video-off'} isActive={isVideoEnabled} onClick={toggleVideo} square liquid />
                 
                 <IconButton icon={isAudioEnabled ? 'mic-on' : 'mic-off'} isActive={isAudioEnabled} onClick={toggleAudio} square liquid />
-            </div>
+            </div> : null}
         </div>)
 }

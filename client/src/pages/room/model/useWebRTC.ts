@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from 'uuid'
-import { useSocketStore, useRoomStore, useModalStore, type Message, useChatStore } from "@/entities"
+import { useSocketStore, useRoomStore, type Message, useChatStore } from "@/entities"
 import type { BufferDataFileType } from "./types"
 
 type onErrorType = (message: string) => void
 
 export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const { socket } = useSocketStore()
-  const { closeJoinModal } = useModalStore()
   const { role, setRole, setRoomParamId, setCheckedRoom, setJoinedRoom } = useRoomStore()
   const { emit, addFile, clearData } = useChatStore()
   const { t } = useTranslation()
@@ -421,7 +420,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     socket.emit('joinroom', { roomId })
     joined.current = true
     setJoinedRoom(true)
-    closeJoinModal()
   }
 
   const emitMessage = async (message: Message) => {

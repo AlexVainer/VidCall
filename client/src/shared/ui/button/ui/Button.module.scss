@@ -99,4 +99,14 @@
         justify-content: center;
         gap: 10px;
     }
+
+    &.action {
+        background: $action;
+        &:hover {
+            background: $actionHover;
+        }
+        &:active {
+            background: $actionActive;
+        }
+    }
 }
