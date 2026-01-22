@@ -1,24 +1,25 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router"
 import { Settings } from "@/widgets"
-import { JoinRoomModal } from "@/features"
 import { Chat, LocalVideo, RemoteVideo } from "@/entities"
 import { useModalStore, useRoomStore, checkRoomExists } from "@/entities"
 import { IconButton } from "@/shared"
 import { useWebRTC } from "../model/useWebRTC"
+import { JoinContainer } from "./JoinContainer"
 import styles from './RoomPage.module.scss'
 
 
 export const RoomPage = () => {
     const { roomId } = useParams<{ roomId: string }>()
-    const { setModalError, modalError, openJoinModal, isJoinModalOpen } = useModalStore()
+    const { setModalError, modalError } = useModalStore()
     const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom } = useRoomStore()
     
     const [isRoomChecked, setIsRoomChecked] = useState(false)
     const [isCheckingRoom, setIsCheckingRoom] = useState(false)
-    const [isMediaPending, setIsMediaPending] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
+
+    const isMediaPendingRef = useRef(false)
     
     const {
         videoSelfRef,
@@ -77,14 +78,11 @@ export const RoomPage = () => {
         if (!roomParamId) {
             setRoomParamId(roomId)
         }
-        if (!joinedRoom && !isJoinModalOpen) {
-            openJoinModal()
-        }
-        if(!isMediaReady && !isMediaPending) {
+        if(!isMediaReady && !isMediaPendingRef.current) {
             initMedia()
-            setIsMediaPending(true)
+            isMediaPendingRef.current = true
         }
-    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaReady, joinedRoom, isJoinModalOpen, isMediaPending])
+    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaReady, joinedRoom])
     
     useEffect(() => {
         return () => {
@@ -100,20 +98,21 @@ export const RoomPage = () => {
 
     return (
         <div className={styles.page}>
-            <JoinRoomModal join={joinRoom} />
-
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
                     <Settings />
 
                     <div className={styles.videoContainer}>
-                        <LocalVideo videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} modal={isJoinModalOpen} />
+                        <LocalVideo isJoined={joinedRoom} videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} />
 
-                        <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                        {joinedRoom 
+                            ? <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                            : <JoinContainer isVideoEnabled={isVideoEnabled} toggleVideo={toggleVideo} isAudioEnabled={isAudioEnabled} toggleAudio={toggleAudio} joinRoom={joinRoom} />
+                        }
                     </div>
                 </div>
                 <div className={`${styles.chatContainer} ${isChatOpen ? styles.chatContainer__open : ''}`}>
-                    <Chat isJoined={joinedRoom} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} isOpen={isChatOpen} />
+                    <Chat isJoined={joinedRoom} isMediaReady={isMediaReady} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} isOpen={isChatOpen} />
                 </div>
                 {joinedRoom && <div className={styles.chatIcon}>
                     <IconButton icon={isChatOpen ? 'close' : 'chat'} square onClick={toggleChat} >

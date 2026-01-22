@@ -9,6 +9,7 @@ export interface Message {
 
 export interface ChatProps {
     isJoined: boolean
+    isMediaReady: boolean
     isDataChanelReady: boolean
     emitMessage: (message: Message) => void
     isOpen: boolean

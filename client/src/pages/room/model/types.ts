@@ -5,3 +5,11 @@ export interface BufferDataFileType {
   fileType: string
   state: 'start' | 'finish'
 }
+
+export interface JoinContainerProps {
+  isVideoEnabled: boolean
+  toggleVideo: () => void
+  isAudioEnabled: boolean
+  toggleAudio: () => void
+  joinRoom: () => void
+}

@@ -4,7 +4,7 @@ export interface LocalVideoProps {
     toggleAudio: () => void
     isVideoEnabled: boolean
     isAudioEnabled: boolean
-    modal?: boolean
+    isJoined: boolean
 }
 
 export interface RemoteVideoProps {
