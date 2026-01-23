@@ -30,4 +30,6 @@ export const en = {
     audioOff: "Turn off audio",
     videoOn: "Turn on video",
     audioOn: "Turn on audio",
+    stopScreenSharing: "Stop screen sharing",
+    exitRoom: "Exit room",
 }

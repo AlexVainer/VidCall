@@ -30,4 +30,6 @@ export const ru = {
     audioOff: "Выключить микрофон",
     videoOn: "Включить видео",
     audioOn: "Включить микрофон",
+    stopScreenSharing: "Остановить трансляцию экрана",
+    exitRoom: "Выйти из комнаты",
 }

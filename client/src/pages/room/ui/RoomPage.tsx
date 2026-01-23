@@ -33,7 +33,9 @@ export const RoomPage = () => {
         joinRoom,
         clearRefs,
         emitMessage,
-        RTCDataChannelState
+        RTCDataChannelState,
+        toggleScreenShare,
+        isScreenSharing
     } = useWebRTC(roomId || '', setModalError)
     
     const { t } = useTranslation()
@@ -79,7 +81,7 @@ export const RoomPage = () => {
             setRoomParamId(roomId)
         }
         if(!isMediaReady && !isMediaPendingRef.current) {
-            initMedia()
+            initMedia(true)
             isMediaPendingRef.current = true
         }
     }, [roomId, isRoomChecked, modalError, roomParamId, isMediaReady, joinedRoom])
@@ -103,8 +105,7 @@ export const RoomPage = () => {
                     <Settings />
 
                     <div className={styles.videoContainer}>
-                        <LocalVideo isJoined={joinedRoom} videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} />
-
+                        <LocalVideo isJoined={joinedRoom} videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} toggleScreenShare={toggleScreenShare} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} isScreenSharing={isScreenSharing} />
                         {joinedRoom 
                             ? <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
                             : <JoinContainer isVideoEnabled={isVideoEnabled} toggleVideo={toggleVideo} isAudioEnabled={isAudioEnabled} toggleAudio={toggleAudio} joinRoom={joinRoom} />
