@@ -7,9 +7,14 @@ export interface LocalVideoProps {
     isAudioEnabled: boolean
     isScreenSharing: boolean
     isJoined: boolean
+    isFullSize: boolean
+    toggleFullSize: () => void
 }
 
 export interface RemoteVideoProps {
     videoRef: React.RefObject<HTMLVideoElement | null>
     isJoined: boolean
+    isDataChannelReady: boolean
+    isFullSize: boolean
+    toggleFullSize: () => void
 }

@@ -10,6 +10,10 @@ export const Chat = ({ isJoined, isMediaReady, isDataChanelReady, emitMessage, i
     const { handleSend, handleFileSelect, messageText, files, inputRef, handleChange, messages } = useChat({ isDataChanelReady, emitMessage })
     const { t } = useTranslation()
 
+    const handleShare = () => {
+        navigator.clipboard.writeText(window.location.href)
+    }
+
     return (
         <div className={styles.chatWrapper + (isMediaReady ? ' ' + styles.ready : "") + (isOpen ? ' ' + styles.opened : "")}>
             <div className={styles.innerChat}>
@@ -35,8 +39,8 @@ export const Chat = ({ isJoined, isMediaReady, isDataChanelReady, emitMessage, i
                 {isDataChanelReady ? null : <div className={`${styles.connecting} ${isOpen ? styles.connecting__open : ''}`}>
                     {isJoined 
                         ? <>
-                            <p>{t('chatPending')}</p>
                             <p>{t('shareLink')}</p>
+                            <p className={styles.share} onClick={handleShare}>{t('share')}</p>
                         </>
                         : <p>{t('joinPending')}</p>
                     }

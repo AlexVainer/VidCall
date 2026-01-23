@@ -3,9 +3,9 @@ import type { LocalVideoProps } from "../model/types"
 import styles from "./Video.module.scss"
 
 
-export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, toggleScreenShare, isVideoEnabled, isAudioEnabled, isScreenSharing, isJoined}: LocalVideoProps) => {
+export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, toggleScreenShare, isVideoEnabled, isAudioEnabled, isScreenSharing, isJoined, toggleFullSize, isFullSize}: LocalVideoProps) => {
     return (
-        <div className={styles.localVideo}>
+        <div className={`${styles.localVideo} ${isFullSize ? styles.floating : ''}`}>
             <video 
             controls={false} 
             ref={videoRef} 
@@ -15,6 +15,11 @@ export const LocalVideo = ({videoRef, toggleVideo, toggleAudio, toggleScreenShar
             className={styles.video}
             onContextMenu={toggleAudio}
             /> 
+            {isFullSize
+                ? <div className={styles.return}>
+                    <IconButton icon='expand' size={32} onClick={toggleFullSize} square liquid/>
+                </div>
+                : null}
             {isJoined ? <div className={styles.controls}>
                 <IconButton icon={isVideoEnabled ? 'video-on' : 'video-off'} isActive={isVideoEnabled} onClick={toggleVideo} square liquid />
                 

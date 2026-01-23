@@ -10,7 +10,6 @@ export const en = {
     recreatingRTC: "Recreating peer connection...",
     recreatingRTCFailed: "Recreating peer connection failed!",
     recreatingRTCSuccess: "Recreated peer successfully!",
-    chatPending: "Waiting for a participant...",
     share: "Share",
     copyLink: "Copy link",
     shareLink: "Share link with participant",
@@ -32,4 +31,5 @@ export const en = {
     audioOn: "Turn on audio",
     stopScreenSharing: "Stop screen sharing",
     exitRoom: "Exit room",
+    pending: 'Waiting for participant to connect...',
 }

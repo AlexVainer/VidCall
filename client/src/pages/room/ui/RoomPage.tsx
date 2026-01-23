@@ -18,6 +18,7 @@ export const RoomPage = () => {
     const [isRoomChecked, setIsRoomChecked] = useState(false)
     const [isCheckingRoom, setIsCheckingRoom] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
+    const [isFullSize, setIsFullSize] = useState(false)
 
     const isMediaPendingRef = useRef(false)
     
@@ -96,6 +97,12 @@ export const RoomPage = () => {
         setIsChatOpen(!isChatOpen)
     }
 
+    const toggleFullSize = () => {
+        setIsFullSize(!isFullSize)
+    }
+
+    const isDataChannelReady = RTCDataChannelState === 'open'
+
     if (modalError || !isRoomChecked) return null
 
     return (
@@ -105,15 +112,25 @@ export const RoomPage = () => {
                     <Settings />
 
                     <div className={styles.videoContainer}>
-                        <LocalVideo isJoined={joinedRoom} videoRef={videoSelfRef} toggleVideo={toggleVideo} toggleAudio={toggleAudio} toggleScreenShare={toggleScreenShare} isVideoEnabled={isVideoEnabled} isAudioEnabled={isAudioEnabled} isScreenSharing={isScreenSharing} />
+                        <LocalVideo 
+                            isFullSize={isFullSize} 
+                            toggleFullSize={toggleFullSize}
+                            isJoined={joinedRoom} 
+                            videoRef={videoSelfRef} 
+                            toggleVideo={toggleVideo} 
+                            toggleAudio={toggleAudio} 
+                            toggleScreenShare={toggleScreenShare} 
+                            isVideoEnabled={isVideoEnabled} 
+                            isAudioEnabled={isAudioEnabled} 
+                            isScreenSharing={isScreenSharing} />
                         {joinedRoom 
-                            ? <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} />
+                            ? <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} toggleFullSize={toggleFullSize} isFullSize={isFullSize} isDataChannelReady={isDataChannelReady} />
                             : <JoinContainer isVideoEnabled={isVideoEnabled} toggleVideo={toggleVideo} isAudioEnabled={isAudioEnabled} toggleAudio={toggleAudio} joinRoom={joinRoom} />
                         }
                     </div>
                 </div>
                 <div className={`${styles.chatContainer} ${isChatOpen ? styles.chatContainer__open : ''}`}>
-                    <Chat isJoined={joinedRoom} isMediaReady={isMediaReady} isDataChanelReady={RTCDataChannelState === 'open'} emitMessage={emitMessage} isOpen={isChatOpen} />
+                    <Chat isJoined={joinedRoom} isMediaReady={isMediaReady} isDataChanelReady={isDataChannelReady} emitMessage={emitMessage} isOpen={isChatOpen} />
                 </div>
                 {joinedRoom && <div className={styles.chatIcon}>
                     <IconButton icon={isChatOpen ? 'close' : 'chat'} square onClick={toggleChat} >
