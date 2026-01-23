@@ -1,3 +1,5 @@
+@use '@/app/styles' as *;
+
 .controls {
     position: absolute;
     display: flex;
@@ -20,6 +22,43 @@
     background: #000;
     position: relative;
     overflow: hidden;
+    @include smooth-ui(transform);
+
+    &.floating {
+        position: fixed;
+        width: 300px;
+        height: 180px;
+        bottom: 30px;
+        left: 30px;
+        border: 2px solid $lightColor;
+        border-radius: 12px;
+        box-shadow: $shadow;
+        z-index: 1003;
+        cursor: pointer;
+
+
+        &:hover {
+            transform: scale(1.1);
+
+            & .return {
+                position: absolute;
+                top:0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                justify-content: center;
+                align-items: center;
+                display: flex;
+                background-color: rgba(255, 255, 255, 0.4);
+            }
+        }
+
+
+
+        .controls {
+            display: none;
+        }
+    }
 }
 
 .remoteVideo {
@@ -28,4 +67,31 @@
     background: #000;
     position: relative;
     overflow: hidden;
+}
+
+.pendingLoader {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    z-index: 1002;
+    padding: 20px;
+
+    div {
+        width: 100px;
+        height: 100px;
+    }
+
+    p {
+        font-size: 22px;
+        font-weight: 700;
+        text-align: center;
+    }
 }

@@ -10,7 +10,6 @@ export const ru = {
     recreatingRTC: "Пересоздание пира...",
     recreatingRTCFailed: "Пересоздание пира не удалось!",
     recreatingRTCSuccess: "Пересоздание пира выполнено!",
-    chatPending: "Ожидание участника...",
     share: "Поделиться",
     copyLink: "Скопировать ссылку",
     shareLink: "Поделитесь ссылкой с участником",
@@ -32,4 +31,5 @@ export const ru = {
     audioOn: "Включить микрофон",
     stopScreenSharing: "Остановить трансляцию экрана",
     exitRoom: "Выйти из комнаты",
+    pending: 'Ожидание подключения участника...',
 }
