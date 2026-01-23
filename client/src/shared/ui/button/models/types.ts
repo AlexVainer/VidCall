@@ -1,25 +1,18 @@
 import type { IconName } from "../../icon/model/types"
 
 export interface ButtonProps {
-    children: React.ReactNode
+    children?: React.ReactNode
     onClick?: () => void
     disabled?: boolean
     square?: boolean
     liquid?: boolean
     isActive?: boolean
     action?: boolean
+    red?: boolean
 }
 
-export interface IconButtonProps {
+export interface IconButtonProps extends ButtonProps {
     icon: IconName
-    onClick?: () => void
-    disabled?: boolean
-    children?: React.ReactNode
-    square?: boolean
-    liquid?: boolean
-    className?: string
     size?: number
-    isActive?: boolean
-    action?: boolean
 }
 

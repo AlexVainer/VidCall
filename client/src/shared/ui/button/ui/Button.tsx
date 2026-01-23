@@ -2,9 +2,9 @@ import { Icon } from "../../icon/ui/Icon"
 import type { ButtonProps, IconButtonProps } from "../models/types"
 import styles from './Button.module.scss'
 
-export const Button = ({ children, onClick, disabled, square, liquid, action, isActive }: ButtonProps) => {
+export const Button = ({ children, onClick, disabled, square, liquid, action, isActive, red }: ButtonProps) => {
     return (
-        <button onClick={onClick} className={`${styles.button} ${disabled ? styles.disabled : ''} ${square ? styles.square : ''} ${liquid ? styles.liquid : ''} ${isActive ? styles.active : ''} ${children ? styles.withText : ''} ${action ? styles.action : ''}`}>
+        <button onClick={onClick} className={`${styles.button} ${disabled ? styles.disabled : ''} ${square ? styles.square : ''} ${liquid ? styles.liquid : ''} ${isActive ? styles.active : ''} ${children ? styles.withText : ''} ${action ? styles.action : ''} ${red ? styles.red : ''}`}>
             {children}
         </button>
     )
@@ -12,7 +12,7 @@ export const Button = ({ children, onClick, disabled, square, liquid, action, is
 
 export const IconButton = ({ icon, onClick, children, size = 28, ...props}: IconButtonProps) => {
     return (
-        <Button onClick={onClick} className={`${styles.button}`} {...props}>
+        <Button onClick={onClick} {...props}>
             <Icon name={icon} size={size} {...props} />
             {children ? <p>{children}</p> : null}
         </Button>
