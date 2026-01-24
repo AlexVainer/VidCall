@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { type Message } from "@/entities"
+import { useRoomStore, type Message } from "@/entities"
 import { FileInput, IconButton, Input } from "@/shared"
 import type { ChatProps } from "../model/types"
 import { useChat } from "../model/useChat"
@@ -7,6 +7,7 @@ import styles from "./Chat.module.scss"
 import { MessageItem } from "./Message"
 
 export const Chat = ({ isJoined, isMediaReady, isDataChanelReady, emitMessage, isOpen }: ChatProps) => {
+    const { role } = useRoomStore()
     const { handleSend, handleFileSelect, messageText, files, inputRef, handleChange, messages } = useChat({ isDataChanelReady, emitMessage })
     const { t } = useTranslation()
 
@@ -37,7 +38,7 @@ export const Chat = ({ isJoined, isMediaReady, isDataChanelReady, emitMessage, i
                     <IconButton icon="send" square onClick={handleSend} disabled={(!messageText && !files.length) || !isDataChanelReady} />
                 </div>
                 {isDataChanelReady ? null : <div className={`${styles.connecting} ${isOpen ? styles.connecting__open : ''}`}>
-                    {isJoined 
+                    {isJoined && role === 'host'
                         ? <>
                             <p>{t('shareLink')}</p>
                             <p className={styles.share} onClick={handleShare}>{t('share')}</p>
