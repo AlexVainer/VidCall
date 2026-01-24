@@ -50,7 +50,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     joined.current = false
     setRoomParamId(null)
     setCheckedRoom(null)
-    setRole(null)
     setJoinedRoom(false)
     clearData()
   }
@@ -205,6 +204,8 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     pc.oniceconnectionstatechange = () => {
       const state = pc.iceConnectionState
       if (state === 'disconnected') {
+        setRole('host')
+        roleRef.current === 'host'
         reconnectWebRTC()
       }
       if (state === 'failed') {
@@ -305,7 +306,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
 
     try {
       await initWebRTC()
-      
       emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCSuccess'), sendedAt: new Date() })
     } catch (err) {
       emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCFailed'), sendedAt: new Date() })
@@ -412,15 +412,16 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
       clearRefs()
     }
 
-    const handleJoin = async (data: { role: 'host' | 'guest' }) => {
-      roleRef.current = data.role
-      setRole(data.role)
-      if (roleRef.current === 'guest') initWebRTCData('guest')
+    const handleJoin = async () => {
+      roleRef.current = 'guest'
+      setRole('guest')
+      initWebRTCData('guest')
     }
 
     const handleRoomCreated = () => {
-      roleRef.current = 'host'
       setRole('host')
+      roleRef.current = 'host'
+      initWebRTCData('host')
     }
 
     socket.on('userjoined', handleUserJoined)
@@ -466,6 +467,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     RTCDataChannelState,
     isChatOnly,
     toggleScreenShare,
-    isScreenSharing
+    isScreenSharing,
   }
 }

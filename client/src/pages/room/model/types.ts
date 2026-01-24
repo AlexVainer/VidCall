@@ -12,4 +12,5 @@ export interface JoinContainerProps {
   isAudioEnabled: boolean
   toggleAudio: () => void
   joinRoom: () => void
+  role: 'host' | 'guest' | null
 }
