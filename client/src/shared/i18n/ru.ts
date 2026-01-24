@@ -1,9 +1,10 @@
 export const ru = {
     createRoom: "Создать комнату",
     joinRoom: "Подключиться к комнате",
+    createRoomTitle: "Создать комнату",
     roomNotExist: "Комната не существует",
     roomFull: "Комната заполнена",
-    joinTitle: "Войти в комнату",
+    joinRoomTitle: "Войти в комнату",
     dataChannelOpen: "Канал данных открыт!",
     dataChannelClosed: "Канал данных закрыт!",
     networkError: "Соединение не удалось. Проверьте интернет-соединение.",
@@ -32,4 +33,5 @@ export const ru = {
     stopScreenSharing: "Остановить трансляцию экрана",
     exitRoom: "Выйти из комнаты",
     pending: 'Ожидание подключения участника...',
+    joining: 'Подключение к комнате...',
 }

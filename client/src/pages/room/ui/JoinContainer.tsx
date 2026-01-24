@@ -3,7 +3,7 @@ import { IconButton, Button } from '@/shared'
 import type { JoinContainerProps } from '../model/types'
 import styles from './RoomPage.module.scss'
 
-export const JoinContainer = ({ isVideoEnabled, toggleVideo, isAudioEnabled, toggleAudio, joinRoom }: JoinContainerProps) => {
+export const JoinContainer = ({ isVideoEnabled, toggleVideo, isAudioEnabled, toggleAudio, joinRoom, role }: JoinContainerProps) => {
   const { t } = useTranslation()
   return (
     <div className={styles.joinContainer}>
@@ -14,7 +14,7 @@ export const JoinContainer = ({ isVideoEnabled, toggleVideo, isAudioEnabled, tog
             <p>{isAudioEnabled ? t('audioOff') : t('audioOn')}</p>
         </IconButton>
         <Button onClick={joinRoom} action>
-            {t('joinRoom')}
+            {role === 'host' ? t('createRoomTitle') : t('joinRoomTitle')}
         </Button>
     </div>
 )

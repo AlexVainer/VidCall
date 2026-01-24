@@ -1,7 +1,8 @@
 export const en = {
     createRoom: "Create room",
     joinRoom: "Join room",
-    joinTitle: "Join the room",
+    joinRoomTitle: "Join the room",
+    createRoomTitle: "Create a room",
     roomNotExist: "Room does not exist",
     roomFull: "Room is full",
     dataChannelOpen: "Data channel opened!",
@@ -32,4 +33,5 @@ export const en = {
     stopScreenSharing: "Stop screen sharing",
     exitRoom: "Exit room",
     pending: 'Waiting for participant to connect...',
+    joining: 'Joining room...',
 }

@@ -13,8 +13,7 @@ import styles from './RoomPage.module.scss'
 export const RoomPage = () => {
     const { roomId } = useParams<{ roomId: string }>()
     const { setModalError, modalError } = useModalStore()
-    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom } = useRoomStore()
-    
+    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom, role } = useRoomStore()
     const [isRoomChecked, setIsRoomChecked] = useState(false)
     const [isCheckingRoom, setIsCheckingRoom] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
@@ -36,7 +35,7 @@ export const RoomPage = () => {
         emitMessage,
         RTCDataChannelState,
         toggleScreenShare,
-        isScreenSharing
+        isScreenSharing,
     } = useWebRTC(roomId || '', setModalError)
     
     const { t } = useTranslation()
@@ -76,11 +75,9 @@ export const RoomPage = () => {
     }, [roomId, isRoomChecked, isCheckingRoom, checkedRoom])
     
     useEffect(() => {
-        if (!isRoomChecked || modalError || !roomId || joinedRoom) return
+        if (!isRoomChecked || modalError || !roomId || joinedRoom || roomParamId) return
         
-        if (!roomParamId) {
-            setRoomParamId(roomId)
-        }
+        setRoomParamId(roomId)
         if(!isMediaReady && !isMediaPendingRef.current) {
             initMedia(true)
             isMediaPendingRef.current = true
@@ -113,6 +110,7 @@ export const RoomPage = () => {
 
                     <div className={styles.videoContainer}>
                         <LocalVideo 
+                            isChatOpen={isChatOpen}
                             isFullSize={isFullSize} 
                             toggleFullSize={toggleFullSize}
                             isJoined={joinedRoom} 
@@ -124,8 +122,8 @@ export const RoomPage = () => {
                             isAudioEnabled={isAudioEnabled} 
                             isScreenSharing={isScreenSharing} />
                         {joinedRoom 
-                            ? <RemoteVideo videoRef={videoRemoteRef} isJoined={joinedRoom} toggleFullSize={toggleFullSize} isFullSize={isFullSize} isDataChannelReady={isDataChannelReady} />
-                            : <JoinContainer isVideoEnabled={isVideoEnabled} toggleVideo={toggleVideo} isAudioEnabled={isAudioEnabled} toggleAudio={toggleAudio} joinRoom={joinRoom} />
+                            ? <RemoteVideo isChatOpen={isChatOpen} videoRef={videoRemoteRef} isJoined={joinedRoom} toggleFullSize={toggleFullSize} isFullSize={isFullSize} isDataChannelReady={isDataChannelReady} />
+                            : <JoinContainer isVideoEnabled={isVideoEnabled} toggleVideo={toggleVideo} isAudioEnabled={isAudioEnabled} toggleAudio={toggleAudio} joinRoom={joinRoom} role={role} />
                         }
                     </div>
                 </div>

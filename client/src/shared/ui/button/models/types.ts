@@ -9,6 +9,7 @@ export interface ButtonProps {
     isActive?: boolean
     action?: boolean
     red?: boolean
+    content?: boolean
 }
 
 export interface IconButtonProps extends ButtonProps {

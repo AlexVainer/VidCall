@@ -121,4 +121,16 @@
             background-color: $redActive;
         }
     }
+    &.content {
+        padding: 0;
+        background-color: transparent;
+        color: $white;
+
+        &:hover {
+            color: $whiteHover;
+        }
+        &:active {
+            color: $whiteActive;
+        }
+    }
 }
