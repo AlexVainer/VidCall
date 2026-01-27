@@ -27,13 +27,13 @@ export const RemoteVideo = ({videoRef, isJoined, isDataChannelReady, toggleFullS
     const handleClose = () => {
         setClose(true)
     }
-
+console.log(isDataChannelReady, isJoined)
     return (
         <div className={`${styles.remoteVideo} ${(isChatOpen && !close) ? styles.floating : ''}`} ref={dragRef}>
-            {!isJoined || (isChatOpen && !isDataChannelReady) ? null : <div className={styles.pendingLoader}>
+            {(isJoined && !isDataChannelReady) ? <div className={styles.pendingLoader}>
                 <Loader type='echo' />
                 <p>{role === 'host' ? t('pending') : t('joining')}</p>
-            </div>}
+            </div> : null}
             <video 
                 controls={false}
                 ref={videoRef} 

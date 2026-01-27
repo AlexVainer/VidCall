@@ -65,15 +65,19 @@
         position: relative;
         display: flex;
         flex-direction: column;
-        text-align: end;
         max-width: 220px;
         min-width: 44px;
-        word-break: break-word;
         padding: 6px;
         padding-bottom: 16px;
         background-color: $darkLight;
         border-radius: 12px;
         gap: 10px;
+
+        & > .message__text {
+            text-align: start;
+            word-break: break-word;
+            margin: 0;
+        }
     }
 
     &.self {

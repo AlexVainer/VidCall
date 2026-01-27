@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router"
 import { Settings } from "@/widgets"
@@ -18,8 +18,6 @@ export const RoomPage = () => {
     const [isCheckingRoom, setIsCheckingRoom] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
     const [isFullSize, setIsFullSize] = useState(false)
-
-    const isMediaPendingRef = useRef(false)
     
     const {
         videoSelfRef,
@@ -30,6 +28,7 @@ export const RoomPage = () => {
         toggleVideo,
         toggleAudio,
         initMedia,
+        isMediaPending,
         joinRoom,
         clearRefs,
         emitMessage,
@@ -78,11 +77,10 @@ export const RoomPage = () => {
         if (!isRoomChecked || modalError || !roomId || joinedRoom || roomParamId) return
         
         setRoomParamId(roomId)
-        if(!isMediaReady && !isMediaPendingRef.current) {
+        if(!isMediaReady && !isMediaPending.current) {
             initMedia(true)
-            isMediaPendingRef.current = true
         }
-    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaReady, joinedRoom])
+    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaPending, initMedia, setRoomParamId, isMediaReady, joinedRoom])
     
     useEffect(() => {
         return () => {

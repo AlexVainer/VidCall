@@ -17,7 +17,7 @@ export const MessageItem = ({ message, key }: { message: Message, key: string })
     return (
         <div className={`${styles.message} ${styles[message.type]}`} key={key}>
             <div className={styles.message__content}>
-                {message.text}
+                <p className={styles.message__text}>{message.text}</p>
                 <div className={styles.message__files}>
                     {message.type === 'self' ? message.files?.map(file => <File key={file.name} name={file.name} onClick={() => handleClickFile(file)} />) : null}
                     {message.type === 'remote' ? messageFiles.map(file => <File key={file.file.name} name={file.file.name} onClick={() => handleClickFile(file.file)} />) : null}

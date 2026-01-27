@@ -19,7 +19,6 @@ export const useChat = ({ isDataChanelReady, emitMessage }: { isDataChanelReady:
         emit({ ...message, files })
         setFiles([])
         setMessageText('')
-        inputRef.current?.blur()
     }
 
     const handleFileSelect = (file: FileList) => {
