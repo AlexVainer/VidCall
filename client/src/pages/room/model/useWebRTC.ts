@@ -3,7 +3,6 @@ import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from 'uuid'
 import { useSocketStore, useRoomStore, useChatStore } from "@/entities"
 import { useWebRTCDataChannel } from "./useWebRTCDataChannel"
-import { isMatch } from "date-fns/fp"
 
 type onErrorType = (message: string) => void
 

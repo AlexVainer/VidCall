@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 import { useParams } from "react-router"
 import { Settings } from "@/widgets"
@@ -29,7 +29,6 @@ export const RoomPage = () => {
         toggleAudio,
         initMedia,
         isMediaPending,
-        setIsMediaPending,
         joinRoom,
         clearRefs,
         emitMessage,
