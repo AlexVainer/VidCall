@@ -10,10 +10,11 @@ export interface ButtonProps {
     action?: boolean
     red?: boolean
     content?: boolean
+    link?: boolean
+    round?: boolean
 }
 
 export interface IconButtonProps extends ButtonProps {
     icon: IconName
     size?: number
 }
-

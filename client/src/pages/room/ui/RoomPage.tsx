@@ -106,7 +106,7 @@ export const RoomPage = () => {
         <div className={styles.page}>
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
-                    <Settings />
+                    <Settings isJoined={joinedRoom} />
 
                     <div className={styles.videoContainer}>
                         <LocalVideo 

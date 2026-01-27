@@ -152,18 +152,6 @@
     display: none;
 }
 
-.share {
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-        transform: scale(1.05);
-    }
-    &:active {
-        transform: scale(1.1);
-    }
-}
-
 .connecting {
     display: flex;
     flex-direction: column;

@@ -1,0 +1,58 @@
+@use '@/app/styles' as *;
+
+.tooltip {
+    &__container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    &__content {
+        position: absolute;
+        display: flex;
+        align-items: center;
+        visibility: hidden;
+        opacity: 0;
+        padding: 10px;
+        pointer-events: none;
+
+        &.top {
+          @include slide-y(16px);
+          bottom: 100%;
+        }
+        &.bottom {
+          @include slide-y(-16px);
+          top: 100%;
+        }
+        &.left {
+          @include slide-x(16px);
+          right: 100%;
+        }
+        &.right {
+          @include slide-x(-16px);
+          left: 100%;
+        }
+
+        &__inner {
+          border-radius: 12px;
+          border: 1px solid rgba(255, 255, 255, 0.4);
+          padding: 5px 10px;
+          background-color: gray;
+          white-space: nowrap;
+        }
+    }
+
+    &__container:hover &__content, &__container.visible &__content {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+
+        &.top, &.bottom {
+          @include slide-y-active(200ms);
+        }
+        &.left, &.right {
+          @include slide-x-active(200ms);
+        }
+    }
+}

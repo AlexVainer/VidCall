@@ -56,3 +56,20 @@
     100% { transform: translateX(0); }
   }
 }
+
+@mixin slide-y($y: 16px, $duration: 240ms) {
+  transform: translateY($y);
+  transition: transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+@mixin slide-y-active($duration: 240ms) {
+    transform: translateY(0);
+    transition: transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+@mixin slide-x($x: 16px, $duration: 240ms) {
+  transform: translateX($x);
+  transition: transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}
+@mixin slide-x-active($duration: 240ms) {
+    transform: translateX(0);
+    transition: transform $duration cubic-bezier(0.16, 1, 0.3, 1);
+}

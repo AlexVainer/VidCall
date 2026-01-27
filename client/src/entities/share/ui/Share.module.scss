@@ -1,0 +1,43 @@
+.shareContent {
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    gap: 12px;
+
+    p {
+        font-weight: 600;
+        margin: auto;
+        margin-left: 0;
+    }
+
+    & > p {
+        font-size: 14px;
+        text-align: start;
+    }
+}
+
+.copyLink {
+    display: flex;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    gap: 10px;
+    padding: 10px 0;
+
+    & > p {
+        width: 140px;
+        font-size: 13px;
+        text-decoration: underline;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    & > button {
+        width: 140px;
+        -webkit-tap-highlight-color: transparent;
+    }
+}
+
+.shareWith {
+    display: flex;
+    gap: 10px;
+}
