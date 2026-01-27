@@ -11,7 +11,11 @@
     line-height: 11px;
     letter-spacing: normal;
     font-weight: 600;
-    @include smooth-ui(all);
+    @include smooth-ui(transform);
+
+    p {
+        margin: 0;
+    }
 
     &:hover {
         background-color: $darkButtonHover;
@@ -132,5 +136,25 @@
         &:active {
             color: $whiteActive;
         }
+    }
+    &.link {
+        background-color: transparent;
+        padding: 9;
+        text-decoration: underline;
+        cursor: pointer;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+        &:active {
+            transform: scale(1.1);
+        }
+
+        svg {
+            display: none;
+        }
+    }
+    &.round {
+        border-radius: 50%;
     }
 }

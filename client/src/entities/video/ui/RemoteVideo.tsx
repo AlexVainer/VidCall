@@ -30,10 +30,10 @@ export const RemoteVideo = ({videoRef, isJoined, isDataChannelReady, toggleFullS
 
     return (
         <div className={`${styles.remoteVideo} ${(isChatOpen && !close) ? styles.floating : ''}`} ref={dragRef}>
-            {isJoined && !isDataChannelReady ? <div className={styles.pendingLoader}>
+            {!isJoined || (isChatOpen && !isDataChannelReady) ? null : <div className={styles.pendingLoader}>
                 <Loader type='echo' />
                 <p>{role === 'host' ? t('pending') : t('joining')}</p>
-            </div> : null}
+            </div>}
             <video 
                 controls={false}
                 ref={videoRef} 

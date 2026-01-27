@@ -34,4 +34,7 @@ export const en = {
     exitRoom: "Exit room",
     pending: 'Waiting for participant to connect...',
     joining: 'Joining room...',
+    copy: "Copy",
+    shareWith: "Share with:",
+    shareText: "Join room with this link",
 }
