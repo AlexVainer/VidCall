@@ -14,3 +14,9 @@ export interface JoinContainerProps {
   joinRoom: () => void
   role: 'host' | 'guest' | null
 }
+
+export interface MediaState {
+  video: boolean
+  audio: boolean
+  screen: boolean
+}

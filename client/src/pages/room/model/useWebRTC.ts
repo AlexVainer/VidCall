@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next"
 import { v4 as uuidv4 } from 'uuid'
 import { useSocketStore, useRoomStore, useChatStore } from "@/entities"
 import { useWebRTCDataChannel } from "./useWebRTCDataChannel"
+import { isMatch } from "date-fns/fp"
 
 type onErrorType = (message: string) => void
 
@@ -17,6 +18,10 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const peerConnection = useRef<RTCPeerConnection | null>(null)
   const localStream = useRef<MediaStream | null>(null)
   const roleRef = useRef(role)
+  const isMediaPending = useRef(false)
+  const setIsMediaPending = (value: boolean) => {
+    isMediaPending.current = value
+  }
 
   const { initWebRTCData, RTCDataChannelState, dataChannelRef, emitMessage } = useWebRTCDataChannel({ peerConnection: peerConnection })
   
@@ -28,7 +33,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const [isVideoEnabled, setIsVideoEnabled] = useState(true)
   const [isAudioEnabled, setIsAudioEnabled] = useState(true)
   const [isMediaReady, setIsMediaReady] = useState(false)
-  const [isMediaPending, setIsMediaPending] = useState(false)
   const [isChatOnly, setIsChatOnly] = useState(false)
   const [isScreenSharing, setIsScreenSharing] = useState(false)
 
@@ -48,6 +52,8 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     pendingIceCandidates.current = []
     pendingOffer.current = null
     joined.current = false
+    roleRef.current = null
+    isMediaPending.current = false
     setRoomParamId(null)
     setCheckedRoom(null)
     setJoinedRoom(false)
@@ -174,15 +180,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   }
 
   const initWebRTC = async () => {
-    try {
-      dataChannelRef.current?.close()
-      dataChannelRef.current = null
-      peerConnection.current?.close()
-      peerConnection.current = null
-    } catch (e) {
-      console.error('Error closing peer connection', e)
-    }
-
     const turnCredentials = await getTurnCredentials()
     
     const config: RTCConfiguration = {
@@ -269,6 +266,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     }
 
     try {
+      setIsMediaPending(true)
       const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
       videoEl.srcObject = stream
       setIsVideoEnabled(true)
@@ -302,14 +300,23 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   }
 
   const reconnectWebRTC = async () => {
-    emit({ type: 'system', id: uuidv4(), text: t('recreatingRTC'), sendedAt: new Date() })
-
     try {
-      await initWebRTC()
-      emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCSuccess'), sendedAt: new Date() })
-    } catch (err) {
-      emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCFailed'), sendedAt: new Date() })
-    }
+      dataChannelRef.current?.close()
+      dataChannelRef.current = null
+      peerConnection.current?.close()
+      peerConnection.current = null
+    } catch (e) {
+      console.error('Error closing peer connection', e)
+    } finally {
+      emit({ type: 'system', id: uuidv4(), text: t('recreatingRTC'), sendedAt: new Date() })
+
+      try {
+        await initWebRTC()
+        emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCSuccess'), sendedAt: new Date() })
+      } catch (err) {
+        emit({ type: 'system', id: uuidv4(), text: t('recreatingRTCFailed'), sendedAt: new Date() })
+      }
+      }
   }
 
 
@@ -421,7 +428,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     const handleRoomCreated = () => {
       setRole('host')
       roleRef.current = 'host'
-      initWebRTCData('host')
     }
 
     socket.on('userjoined', handleUserJoined)
@@ -457,6 +463,7 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     isVideoEnabled,
     isAudioEnabled,
     isMediaReady,
+    setIsMediaPending,
     isMediaPending,
     toggleVideo,
     toggleAudio,
