@@ -11,7 +11,7 @@ import styles from './RoomPage.module.scss'
 
 
 export const RoomPage = () => {
-    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom, role } = useRoomStore()
+    const { roomParamId, checkedRoom, setCheckedRoom, joinedRoom, role } = useRoomStore()
     const { roomId } = useParams<{ roomId: string }>()
     const { setModalError, modalError } = useModalStore()
     const [isRoomChecked, setIsRoomChecked] = useState(false)
@@ -36,7 +36,7 @@ export const RoomPage = () => {
         toggleScreenShare,
         isScreenSharing,
     } = useWebRTC(roomId || roomParamId || '', setModalError)
-    console.log(roomId, roomParamId)
+
     const { t } = useTranslation()
 
     useEffect(() => {
@@ -75,13 +75,10 @@ export const RoomPage = () => {
     
     useEffect(() => {
         if (!isRoomChecked || modalError || joinedRoom) return
-        // if (!roomId && !roomParamId) return
-        // setRoomParamId(roomId || roomParamId)
         if(!isMediaReady && !isMediaPending.current) {
-            console.log('initMedia')
             initMedia(true)
         }
-    }, [roomId, isRoomChecked, modalError, isMediaPending, initMedia, setRoomParamId, isMediaReady, joinedRoom])
+    }, [isRoomChecked, modalError, joinedRoom, isMediaPending, initMedia, isMediaReady])
     
     useEffect(() => {
         return () => {
