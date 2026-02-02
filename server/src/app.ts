@@ -10,7 +10,13 @@ import express from 'express'
 import path from 'path'
 
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+    transports: ["websocket", "polling"],
+    cors: {
+        origin: "https://flappychat.online",
+        credentials: true
+    }
+})
 
 if (NODE_ENV === 'development') {
     const proxyMiddleware = createProxyMiddleware({
