@@ -1,11 +1,11 @@
 import { create } from "zustand"
 
 interface RoomStore {
-    roomParamId: string | null;
+    roomParamId: string;
     userName: string;
     checkedRoom: string | null;
     role: 'host' | 'guest' | null;
-    setRoomParamId: (roomParamId: string | null) => void;
+    setRoomParamId: (roomParamId: string) => void;
     setUserName: (userName: string) => void;
     setCheckedRoom: (checkedRoom: string | null) => void;
     setRole: (role: 'host' | 'guest' | null) => void;
@@ -14,12 +14,12 @@ interface RoomStore {
 }
 
 export const useRoomStore = create<RoomStore>((set => ({
-    roomParamId: null,
+    roomParamId: "",
     userName: "",
     checkedRoom: null,
     role: null,
     joinedRoom: false,
-    setRoomParamId: (roomParamId: string | null) => set({ roomParamId }),
+    setRoomParamId: (roomParamId: string) => set({ roomParamId }),
     setUserName: (userName: string) => set({ userName }),
     setCheckedRoom: (checkedRoom: string | null) => set({ checkedRoom }),
     setRole: (role: 'host' | 'guest' | null) => set({ role }),

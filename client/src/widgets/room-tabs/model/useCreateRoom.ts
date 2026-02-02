@@ -7,15 +7,16 @@ export const useCreateRoom = () => {
     const { socket } = useSocketStore()
     
     const { setModalError } = useModalStore()
-    const { setCheckedRoom, setRole } = useRoomStore()
+    const { setCheckedRoom, setRole, setRoomParamId } = useRoomStore()
     
     useEffect(() => {
         if (!socket) return
         
         const handleRoomCreated = ({ roomId }: { roomId: string }) => {
             setCheckedRoom(roomId)
+            setRoomParamId(roomId)
             setRole('host')
-            navigate(`/room/${roomId}`)
+            navigate(`/room`)
         }
         
         socket.on('roomcreated', handleRoomCreated)

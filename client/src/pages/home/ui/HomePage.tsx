@@ -1,6 +1,6 @@
+import { useTranslation } from "react-i18next"
 import { RoomTabs } from "@/widgets"
 import styles from './HomePage.module.scss'
-import { useTranslation } from "react-i18next"
 
 export const HomePage = () => {
     const { t } = useTranslation()
@@ -8,7 +8,7 @@ export const HomePage = () => {
     return (
         <div className={styles.page}>
             <div className={styles.logoContainer}>
-                <img src="/public/images/logo.png" alt="logo" />
+                <img src="/public/images/logo.webp" fetchPriority="high" alt="logo" />
             </div>
 
             <div className={styles.homeText}>

@@ -131,6 +131,7 @@ export const wsHandler = (socket: Socket, io: Server) => {
         if (room) {
             if (room.users.length < 2) {
                 deleteRoom(room.roomId)
+                socket.to(room.roomId).disconnectSockets(true)
             } else {
                 saveRoom({ ...room, users: room.users.filter(user => user.socketId !== socket.id) })
                 socket.to(room.roomId).emit('user-left', socket.id)
