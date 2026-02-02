@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 import { useTranslation } from "react-i18next"
+import { useNavigate } from "react-router"
 import { v4 as uuidv4 } from 'uuid'
 import { useSocketStore, useRoomStore, useChatStore } from "@/entities"
 import { useWebRTCDataChannel } from "./useWebRTCDataChannel"
@@ -8,9 +9,10 @@ type onErrorType = (message: string) => void
 
 export const useWebRTC = (roomId: string, onError: onErrorType) => {
   const { socket } = useSocketStore()
-  const { role, setRole, setRoomParamId, setCheckedRoom, setJoinedRoom } = useRoomStore()
+  const { role, setRole, setCheckedRoom, setJoinedRoom } = useRoomStore()
   const { emit, clearData } = useChatStore()
   const { t } = useTranslation()
+  const navigate = useNavigate()
 
   const videoSelfRef = useRef<HTMLVideoElement>(null)
   const videoRemoteRef = useRef<HTMLVideoElement>(null)
@@ -53,7 +55,6 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
     joined.current = false
     roleRef.current = null
     isMediaPending.current = false
-    setRoomParamId(null)
     setCheckedRoom(null)
     setJoinedRoom(false)
     clearData()
@@ -401,7 +402,9 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
 
     const handleUserJoined = async () => {
       const pc = peerConnection.current
-      if (roleRef.current === 'host') initWebRTCData('host')
+      setRole('host')
+      roleRef.current = 'host'
+      initWebRTCData('host')
       if (pc && pc.signalingState === 'stable') {
         isOfferer.current = true
         const offer = await pc.createOffer()
@@ -449,9 +452,11 @@ export const useWebRTC = (roomId: string, onError: onErrorType) => {
   }, [socket, onError])
 
   const joinRoom = () => {
-    if (!socket || joined.current) return
+    if (!socket || joined.current || !roomId) return
+    navigate(`/room/${roomId}`)
     socket.emit('joinroom', { roomId })
     joined.current = true
+    console.log('joined room', roomId)
     setJoinedRoom(true)
   }
 

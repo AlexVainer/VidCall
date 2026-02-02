@@ -22,7 +22,7 @@ export const Settings = ({ isJoined }: { isJoined: boolean }) => {
   return (
     <div className={styles.settingsContainer}>
         <div className={styles.logoContainer}>
-            <img src="/public/images/logo.png" alt="logo" onClick={handleClickLogo} />
+            <img src="/public/images/logo.webp" fetchPriority="high" alt="logo" onClick={handleClickLogo} />
         </div>
         <div className={styles.buttonContainer}>
             {!isShareClicked && isJoined ?

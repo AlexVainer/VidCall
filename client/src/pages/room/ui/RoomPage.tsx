@@ -11,9 +11,9 @@ import styles from './RoomPage.module.scss'
 
 
 export const RoomPage = () => {
+    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom, role } = useRoomStore()
     const { roomId } = useParams<{ roomId: string }>()
     const { setModalError, modalError } = useModalStore()
-    const { setRoomParamId, roomParamId, checkedRoom, setCheckedRoom, joinedRoom, role } = useRoomStore()
     const [isRoomChecked, setIsRoomChecked] = useState(false)
     const [isCheckingRoom, setIsCheckingRoom] = useState(false)
     const [isChatOpen, setIsChatOpen] = useState(false)
@@ -35,12 +35,12 @@ export const RoomPage = () => {
         RTCDataChannelState,
         toggleScreenShare,
         isScreenSharing,
-    } = useWebRTC(roomId || '', setModalError)
-    
+    } = useWebRTC(roomId || roomParamId || '', setModalError)
+    console.log(roomId, roomParamId)
     const { t } = useTranslation()
 
     useEffect(() => {
-        if (!roomId) {
+        if (!roomId && !roomParamId) {
             return
         }
         
@@ -53,13 +53,13 @@ export const RoomPage = () => {
             
             setIsCheckingRoom(true)
             
-            const roomSize = await checkRoomExists(roomId)
+            const roomSize = await checkRoomExists(roomId || roomParamId)
             
             setIsCheckingRoom(false)
             
             if (roomSize && roomSize.size < 2) {
                 setIsRoomChecked(true)
-                setCheckedRoom(roomId)
+                setCheckedRoom(roomId || roomParamId)
                 return
             } else if (roomSize && roomSize.size > 1) {
                 setModalError(t('roomIsFull'))
@@ -74,13 +74,14 @@ export const RoomPage = () => {
     }, [roomId, isRoomChecked, isCheckingRoom, checkedRoom])
     
     useEffect(() => {
-        if (!isRoomChecked || modalError || !roomId || joinedRoom || roomParamId) return
-        
-        setRoomParamId(roomId)
+        if (!isRoomChecked || modalError || joinedRoom) return
+        // if (!roomId && !roomParamId) return
+        // setRoomParamId(roomId || roomParamId)
         if(!isMediaReady && !isMediaPending.current) {
+            console.log('initMedia')
             initMedia(true)
         }
-    }, [roomId, isRoomChecked, modalError, roomParamId, isMediaPending, initMedia, setRoomParamId, isMediaReady, joinedRoom])
+    }, [roomId, isRoomChecked, modalError, isMediaPending, initMedia, setRoomParamId, isMediaReady, joinedRoom])
     
     useEffect(() => {
         return () => {
